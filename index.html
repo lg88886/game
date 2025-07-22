@@ -99,6 +99,26 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen font-inter text-dark">
+    <!-- 音效元素 - 隐藏在页面中 -->
+    <audio id="correct-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="wrong-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="start-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-start-610.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="submit-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="game-over-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="time-warning-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="container mx-auto px-4 py-6 max-w-4xl">
         <!-- 加载提示 -->
         <div id="loading-indicator" class="text-center py-10">
@@ -382,6 +402,27 @@
     </div>
 
     <script>
+        // 音效元素
+        const sounds = {
+            correct: document.getElementById('correct-sound'),
+            wrong: document.getElementById('wrong-sound'),
+            start: document.getElementById('start-sound'),
+            submit: document.getElementById('submit-sound'),
+            gameOver: document.getElementById('game-over-sound'),
+            timeWarning: document.getElementById('time-warning-sound')
+        };
+
+        // 播放音效的函数
+        function playSound(soundName, volume = 0.7) {
+            const sound = sounds[soundName];
+            if (sound) {
+                // 重置音效并播放
+                sound.currentTime = 0;
+                sound.volume = volume;
+                sound.play().catch(e => console.log(`音效播放失败: ${e}`));
+            }
+        }
+
         // 游戏状态
         const gameState = {
             score: 0,
@@ -624,6 +665,9 @@
                 return;
             }
             
+            // 播放游戏开始音效
+            playSound('start');
+            
             gameState.isPlaying = true;
             startBtn.classList.add('hidden');
             restartBtn.classList.remove('hidden');
@@ -648,6 +692,10 @@
             timerDisplay.textContent = gameState.timeLeft;
             progressBar.style.width = '100%';
             closeGameOverModal();
+            
+            // 播放游戏开始音效
+            playSound('start');
+            
             startGame();
         }
 
@@ -681,6 +729,9 @@
 
         // 保存设置
         function saveSettings() {
+            // 播放提交音效
+            playSound('submit');
+            
             // 更新难度
             gameState.difficulty = difficultySetting.value;
             difficultyDisplay.textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
@@ -706,6 +757,9 @@
 
         // 分享结果
         function shareResult() {
+            // 播放提交音效
+            playSound('submit');
+            
             if (navigator.share) {
                 navigator.share({
                     title: '益智题挑战',
@@ -734,16 +788,24 @@
             timerDisplay.textContent = gameState.timeLeft;
             progressBar.style.width = '100%';
             
+            // 清除时间警告样式
+            timerDisplay.classList.remove('text-danger', 'animate-pulse');
+            
             gameState.timerInterval = setInterval(() => {
                 gameState.timeLeft--;
                 timerDisplay.textContent = gameState.timeLeft;
                 const percentage = (gameState.timeLeft / gameState.timeLimit) * 100;
                 progressBar.style.width = `${percentage}%`;
                 
-                // 时间快用完时的视觉提示
+                // 时间快用完时的视觉和音效提示
                 if (gameState.timeLeft <= 10) {
                     timerDisplay.classList.add('text-danger');
                     timerDisplay.classList.add('animate-pulse');
+                    
+                    // 最后5秒每秒播放一次警告音效
+                    if (gameState.timeLeft <= 5 && gameState.timeLeft % 1 === 0) {
+                        playSound('timeWarning', 0.3);
+                    }
                 } else {
                     timerDisplay.classList.remove('text-danger');
                     timerDisplay.classList.remove('animate-pulse');
@@ -872,6 +934,9 @@
         function checkAnswer(e) {
             if (!gameState.isPlaying) return;
             
+            // 播放提交音效
+            playSound('submit');
+            
             clearInterval(gameState.timerInterval);
             const selectedAnswer = e.target.textContent;
             
@@ -901,6 +966,9 @@
         function checkInputAnswer() {
             if (!gameState.isPlaying || !inputAnswer.value.trim()) return;
             
+            // 播放提交音效
+            playSound('submit');
+            
             clearInterval(gameState.timerInterval);
             const userAnswer = inputAnswer.value.trim().toLowerCase();
             
@@ -920,6 +988,9 @@
 
         // 处理正确答案
         function handleCorrectAnswer() {
+            // 播放正确答案音效
+            playSound('correct');
+            
             gameState.score += 10 + gameState.timeLeft; // 得分基于剩余时间
             gameState.correctAnswers++;
             updateScore();
@@ -938,6 +1009,9 @@
 
         // 处理错误答案
         function handleWrongAnswer() {
+            // 播放错误答案音效
+            playSound('wrong');
+            
             gameState.wrongAnswers++;
             
             feedbackDisplay.textContent = `错误！正确答案是: ${gameState.currentQuestion.answer}`;
@@ -959,6 +1033,9 @@
 
         // 结束游戏
         function endGame() {
+            // 播放游戏结束音效
+            playSound('gameOver');
+            
             gameState.isPlaying = false;
             clearInterval(gameState.timerInterval);
             
@@ -984,6 +1061,9 @@
 
         // 打开排行榜
         function openLeaderboard() {
+            // 播放提交音效
+            playSound('submit', 0.3);
+            
             updateLeaderboardDisplay();
             leaderboardModal.classList.remove('hidden');
             setTimeout(() => {
@@ -1003,6 +1083,9 @@
 
         // 打开玩家名称输入框
         function openPlayerNameModal() {
+            // 播放提交音效
+            playSound('submit', 0.3);
+            
             // 如果已有名字，填充输入框
             if (leaderboardState.playerName) {
                 playerNameInput.value = leaderboardState.playerName;
@@ -1031,6 +1114,9 @@
 
         // 保存玩家名称
         function savePlayerName() {
+            // 播放提交音效
+            playSound('submit');
+            
             const name = playerNameInput.value.trim() || '匿名玩家';
             leaderboardState.playerName = name;
             localStorage.setItem('puzzleGamePlayerName', name);
@@ -1127,6 +1213,9 @@
 
         // 清空排行榜
         function clearLeaderboard() {
+            // 播放提交音效
+            playSound('submit');
+            
             if (confirm('确定要清空所有排行榜记录吗？此操作不可恢复。')) {
                 leaderboardState.scores = [];
                 localStorage.removeItem('puzzleGameScores');
@@ -1151,4 +1240,4 @@
         document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
-</html>    
+</html>
