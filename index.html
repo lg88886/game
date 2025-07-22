@@ -121,7 +121,7 @@
                 <i class="fa fa-clock-o text-danger text-xl mr-2"></i>
                 <div>
                     <p class="text-gray-500 text-xs">剩余时间</p>
-                    <p id="timer" class="text-xl font-bold">10</p>
+                    <p id="timer" class="text-xl font-bold">60</p>
                 </div>
             </div>
             
@@ -249,11 +249,11 @@
                 
                 <div class="mb-4">
                     <label for="time-limit" class="block text-gray-700 mb-2 font-medium">每题时间限制 (秒)</label>
-                    <input type="range" id="time-limit" min="5" max="30" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
+                    <input type="range" id="time-limit" min="5" max="120" value="60" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
                     <div class="flex justify-between text-sm text-gray-500 mt-1">
                         <span>5秒</span>
-                        <span id="time-value">10秒</span>
-                        <span>30秒</span>
+                        <span id="time-value">60秒</span>
+                        <span>120秒</span>
                     </div>
                 </div>
                 
@@ -321,7 +321,7 @@
         // 游戏状态
         const gameState = {
             score: 0,
-            timeLeft: 10,
+            timeLeft: 60,
             timerInterval: null,
             isPlaying: false,
             currentQuestion: null,
@@ -329,7 +329,9 @@
             wrongAnswers: 0,
             difficulty: 'easy',
             questionTypes: ['math', 'logic', 'trivia', 'word', 'life', 'fun', 'number'],
-            timeLimit: 10
+            timeLimit: 60,
+            questions: null, // 从JSON加载的题库
+            usedQuestions: {} // 记录已使用的题目索引，避免重复
         };
 
         // 题目类型配置
@@ -430,6 +432,13 @@
             optionButtons.forEach(button => button.addEventListener('click', checkAnswer));
             submitAnswer.addEventListener('click', checkInputAnswer);
             
+            // 允许按Enter键提交输入答案
+            inputAnswer.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkInputAnswer();
+                }
+            });
+            
             // 模态框动画
             settingsModal.addEventListener('click', (e) => {
                 if (e.target === settingsModal) closeSettings();
@@ -440,6 +449,22 @@
             });
         }
 
+        // 加载题库
+        async function loadQuestions() {
+            try {
+                const response = await fetch('questions.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load questions');
+                }
+                gameState.questions = await response.json();
+                console.log('题库加载成功');
+            } catch (error) {
+                console.error('加载题库时出错:', error);
+                // 加载失败时使用备用题目
+                gameState.questions = getFallbackQuestions();
+            }
+        }
+
         // 更新时间显示
         function updateTimeValue() {
             timeValueDisplay.textContent = `${timeLimitSlider.value}秒`;
@@ -447,12 +472,18 @@
 
         // 开始游戏
         function startGame() {
+            if (!gameState.questions) {
+                alert('正在加载题库，请稍候重试');
+                return;
+            }
+            
             gameState.isPlaying = true;
             startBtn.classList.add('hidden');
             restartBtn.classList.remove('hidden');
             gameState.score = 0;
             gameState.correctAnswers = 0;
             gameState.wrongAnswers = 0;
+            gameState.usedQuestions = {}; // 重置已使用的题目
             updateScore();
             generateQuestion();
             startTimer();
@@ -565,7 +596,7 @@
                 progressBar.style.width = `${percentage}%`;
                 
                 // 时间快用完时的视觉提示
-                if (gameState.timeLeft <= 3) {
+                if (gameState.timeLeft <= 10) {
                     timerDisplay.classList.add('text-danger');
                     timerDisplay.classList.add('animate-pulse');
                 } else {
@@ -590,41 +621,52 @@
             // 随机选择问题类型
             const questionType = gameState.questionTypes[Math.floor(Math.random() * gameState.questionTypes.length)];
             
+            // 获取该类型的题目
+            const questionsOfType = gameState.questions[questionType] || [];
+            
+            if (questionsOfType.length === 0) {
+                // 如果该类型没有题目，使用默认题目
+                const defaultQuestion = {
+                    question: "默认问题",
+                    answer: "默认答案",
+                    options: ["选项1", "选项2", "选项3"]
+                };
+                
+                updateQuestionUI(defaultQuestion, questionType);
+                return;
+            }
+            
+            // 确保不重复使用题目
+            let availableQuestions = questionsOfType;
+            if (gameState.usedQuestions[questionType]) {
+                availableQuestions = questionsOfType.filter((_, index) => 
+                    !gameState.usedQuestions[questionType].includes(index)
+                );
+                
+                // 如果所有题目都用过了，重置已使用的题目列表
+                if (availableQuestions.length === 0) {
+                    gameState.usedQuestions[questionType] = [];
+                    availableQuestions = questionsOfType;
+                }
+            } else {
+                gameState.usedQuestions[questionType] = [];
+            }
+            
+            // 随机选择一个题目
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            const originalIndex = questionsOfType.indexOf(availableQuestions[randomIndex]);
+            gameState.usedQuestions[questionType].push(originalIndex);
+            
+            const questionData = availableQuestions[randomIndex];
+            
+            // 更新UI
+            updateQuestionUI(questionData, questionType);
+        }
+
+        // 更新问题UI
+        function updateQuestionUI(questionData, questionType) {
             // 更新问题类型指示器
             updateQuestionTypeIndicator(questionType);
-            
-            let questionData;
-            
-            // 根据问题类型生成题目
-            switch (questionType) {
-                case 'math':
-                    questionData = generateMathQuestion();
-                    break;
-                case 'logic':
-                    questionData = generateLogicQuestion();
-                    break;
-                case 'trivia':
-                    questionData = generateTriviaQuestion();
-                    break;
-                case 'word':
-                    questionData = generateWordQuestion();
-                    break;
-                case 'life':
-                    questionData = generateLifeQuestion();
-                    break;
-                case 'fun':
-                    questionData = generateFunQuestion();
-                    break;
-                case 'number':
-                    questionData = generateNumberSequenceQuestion();
-                    break;
-                default:
-                    questionData = {
-                        question: "默认问题",
-                        answer: "默认答案",
-                        options: ["选项1", "选项2", "选项3"]
-                    };
-            }
             
             // 保存当前问题
             gameState.currentQuestion = {
@@ -645,6 +687,7 @@
                     button.textContent = shuffledOptions[index];
                     button.disabled = false;
                     button.classList.remove('bg-secondary', 'bg-danger', 'opacity-70');
+                    button.classList.remove(...Object.values(questionTypeConfig).map(config => config.buttonColor));
                     button.classList.add(questionTypeConfig[questionType].buttonColor);
                 });
                 
@@ -656,6 +699,8 @@
                 optionsContainer.classList.add('hidden');
                 inputAnswerContainer.classList.remove('hidden');
                 inputAnswer.value = '';
+                inputAnswer.disabled = false;
+                submitAnswer.disabled = false;
                 inputAnswer.focus();
             }
             
@@ -676,361 +721,6 @@
             questionTypeDisplay.className = `text-xl font-bold ${config.color}`;
             typeIcon.className = `fa ${config.icon} ${config.color} text-xl mr-2`;
             questionTypeIndicator.className = `bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover ${config.color.replace('text-', 'border-')} border-2`;
-        }
-
-        // 生成数学问题
-        function generateMathQuestion() {
-            // 随机选择数学运算类型
-            const operations = ['addition', 'subtraction', 'multiplication', 'division', 'percentage', 'fraction'];
-            const operation = operations[Math.floor(Math.random() * operations.length)];
-            
-            let num1, num2, answer, questionText, options;
-            
-            // 根据难度设置数字范围
-            const difficultyRanges = {
-                easy: { min: 1, max: 10 },
-                medium: { min: 10, max: 50 },
-                hard: { min: 50, max: 100 }
-            };
-            
-            const { min, max } = difficultyRanges[gameState.difficulty];
-            
-            // 根据运算类型生成题目
-            switch (operation) {
-                case 'addition':
-                    num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    answer = num1 + num2;
-                    questionText = `${num1} + ${num2} = ?`;
-                    break;
-                case 'subtraction':
-                    // 确保结果为正数
-                    num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    num2 = Math.floor(Math.random() * (num1 - min + 1)) + min;
-                    answer = num1 - num2;
-                    questionText = `${num1} - ${num2} = ?`;
-                    break;
-                case 'multiplication':
-                    // 减小乘法的数值范围
-                    const multMin = gameState.difficulty === 'easy' ? 2 : 
-                                   gameState.difficulty === 'medium' ? 5 : 10;
-                    const multMax = gameState.difficulty === 'easy' ? 10 : 
-                                   gameState.difficulty === 'medium' ? 20 : 30;
-                    num1 = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
-                    num2 = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
-                    answer = num1 * num2;
-                    questionText = `${num1} × ${num2} = ?`;
-                    break;
-                case 'division':
-                    // 确保能整除
-                    num2 = Math.floor(Math.random() * (10 - 2 + 1)) + 2; // 2-10的除数
-                    const quotient = Math.floor(Math.random() * (max/num2 - min/num2 + 1)) + min/num2;
-                    num1 = num2 * quotient;
-                    answer = quotient;
-                    questionText = `${num1} ÷ ${num2} = ?`;
-                    break;
-                case 'percentage':
-                    num1 = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
-                    num2 = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
-                    answer = Math.round(num1 * num2 / 100);
-                    questionText = `${num1}% 的 ${num2} 是多少?`;
-                    break;
-                default:
-                    num1 = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-                    num2 = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-                    answer = num1 + num2;
-                    questionText = `${num1} + ${num2} = ?`;
-            }
-            
-            // 生成干扰选项
-            options = [answer];
-            while (options.length < 3) {
-                let wrongAnswer;
-                do {
-                    // 根据答案大小生成合理的干扰选项
-                    const range = Math.max(1, Math.floor(answer * 0.2));
-                    wrongAnswer = answer + (Math.floor(Math.random() * (range * 2 + 1)) - range);
-                    if (wrongAnswer === answer) wrongAnswer += (Math.random() > 0.5 ? 1 : -1);
-                } while (options.includes(wrongAnswer) || wrongAnswer < 0);
-                options.push(wrongAnswer);
-            }
-            
-            return {
-                question: questionText,
-                answer: answer.toString(),
-                options: options.map(String)
-            };
-        }
-
-        // 生成逻辑问题
-        function generateLogicQuestion() {
-            const logicQuestions = [
-                {
-                    question: "有一个房间，里面有3盏灯，外面有3个开关。你只能进入房间一次，如何确定哪个开关控制哪盏灯？",
-                    answer: "先打开第一个开关，等几分钟后关闭，再打开第二个开关，然后进入房间。亮着的灯由第二个开关控制，发热但不亮的灯由第一个开关控制，剩下的灯由第三个开关控制。",
-                    requiresInput: true
-                },
-                {
-                    question: "一个人在漆黑的房间里能看到东西吗？",
-                    answer: "不能",
-                    options: ["能", "不能", "有时能"]
-                },
-                {
-                    question: "如果5只猫5分钟能捉5只老鼠，那么100只猫捉100只老鼠需要多长时间？",
-                    answer: "5分钟",
-                    options: ["5分钟", "10分钟", "100分钟"]
-                },
-                {
-                    question: "一个家庭有两个孩子，其中一个是男孩，另一个也是男孩的概率是多少？",
-                    answer: "1/3",
-                    options: ["1/2", "1/3", "1/4"]
-                },
-                {
-                    question: "有10个袋子，每个袋子有10枚金币，其中9个袋子里的金币每个重10克，只有一个袋子里的金币每个重9克。如何只称一次就找出那个装9克金币的袋子？",
-                    answer: "从第1个袋子取1枚，第2个取2枚...第10个取10枚，一起称重。总重量比550克少几克，就是第几个袋子。",
-                    requiresInput: true
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = logicQuestions[Math.floor(Math.random() * logicQuestions.length)];
-            
-            if (question.requiresInput) {
-                return {
-                    question: question.question,
-                    answer: question.answer.toLowerCase()
-                };
-            } else {
-                return {
-                    question: question.question,
-                    answer: question.answer,
-                    options: question.options
-                };
-            }
-        }
-
-        // 生成脑筋急转弯问题
-        function generateTriviaQuestion() {
-            const triviaQuestions = [
-                {
-                    question: "什么东西越洗越脏？",
-                    answer: "水",
-                    options: ["水", "肥皂", "衣服"]
-                },
-                {
-                    question: "什么东西有五个头，但人不觉得它怪呢？",
-                    answer: "手或脚",
-                    options: ["手或脚", "怪物", "手套"]
-                },
-                {
-                    question: "什么东西晚上才会长出尾巴？",
-                    answer: "流星",
-                    options: ["流星", "月亮", "松鼠"]
-                },
-                {
-                    question: "什么东西越热越爱出来？",
-                    answer: "汗",
-                    options: ["汗", "冰淇淋", "太阳"]
-                },
-                {
-                    question: "什么东西人们在不停地吃它，却永远吃不饱？",
-                    answer: "空气",
-                    options: ["空气", "水", "零食"]
-                },
-                {
-                    question: "什么东西能加不能减？",
-                    answer: "年龄",
-                    options: ["年龄", "体重", "钱"]
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
-            return {
-                question: question.question,
-                answer: question.answer,
-                options: question.options
-            };
-        }
-
-        // 生成文字理解问题
-        function generateWordQuestion() {
-            const wordQuestions = [
-                {
-                    question: "请找出与'高兴'意思最相近的词",
-                    answer: "快乐",
-                    options: ["快乐", "悲伤", "愤怒"]
-                },
-                {
-                    question: "请找出与'巨大'意思相反的词",
-                    answer: "微小",
-                    options: ["微小", "高大", "广阔"]
-                },
-                {
-                    question: "'画蛇添足'这个成语的意思是？",
-                    answer: "做了多余的事，反而不合适",
-                    options: [
-                        "做了多余的事，反而不合适",
-                        "画画技巧高超",
-                        "蛇的样子很奇怪"
-                    ]
-                },
-                {
-                    question: "'一箭双雕'这个成语比喻什么？",
-                    answer: "做一件事达到两个目的",
-                    options: [
-                        "做一件事达到两个目的",
-                        "射箭技术高超",
-                        "雕的数量很多"
-                    ]
-                },
-                {
-                    question: "下列哪个词语是描写天气的？",
-                    answer: "晴空万里",
-                    options: ["晴空万里", "眉清目秀", "四面八方"]
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = wordQuestions[Math.floor(Math.random() * wordQuestions.length)];
-            return {
-                question: question.question,
-                answer: question.answer,
-                options: question.options
-            };
-        }
-
-        // 生成生活常识问题
-        function generateLifeQuestion() {
-            const lifeQuestions = [
-                {
-                    question: "煮鸡蛋时，如何更容易剥壳？",
-                    answer: "煮好后放入冷水中",
-                    options: [
-                        "煮好后放入冷水中",
-                        "煮的时候加醋",
-                        "煮的时间越长越好"
-                    ]
-                },
-                {
-                    question: "哪种食物富含维生素C？",
-                    answer: "橙子",
-                    options: ["橙子", "牛肉", "米饭"]
-                },
-                {
-                    question: "家用电器着火时，首先应该做什么？",
-                    answer: "切断电源",
-                    options: ["切断电源", "用水浇灭", "用布盖住"]
-                },
-                {
-                    question: "下列哪种做法有助于节约用水？",
-                    answer: "用洗菜水浇花",
-                    options: [
-                        "用洗菜水浇花",
-                        "开着水龙头刷牙",
-                        "频繁冲洗马桶"
-                    ]
-                },
-                {
-                    question: "正常成年人的体温大约是多少？",
-                    answer: "37℃左右",
-                    options: ["37℃左右", "35℃左右", "39℃左右"]
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = lifeQuestions[Math.floor(Math.random() * lifeQuestions.length)];
-            return {
-                question: question.question,
-                answer: question.answer,
-                options: question.options
-            };
-        }
-
-        // 生成趣味推理问题
-        function generateFunQuestion() {
-            const funQuestions = [
-                {
-                    question: "一个人在雨中行走，为什么他的头发没有湿？",
-                    answer: "他是光头",
-                    options: ["他是光头", "他带了伞", "雨不大"]
-                },
-                {
-                    question: "为什么自由女神像总是站在纽约港？",
-                    answer: "因为她不能坐下",
-                    options: [
-                        "因为她不能坐下",
-                        "那是她的工作岗位",
-                        "为了方便游客参观"
-                    ]
-                },
-                {
-                    question: "什么东西买的人知道，卖的人也知道，只有用的人不知道？",
-                    answer: "棺材",
-                    options: ["棺材", "礼物", "药品"]
-                },
-                {
-                    question: "为什么数学书总是很忧郁？",
-                    answer: "因为它有太多的问题",
-                    options: [
-                        "因为它有太多的问题",
-                        "它很难懂",
-                        "它很厚重"
-                    ]
-                },
-                {
-                    question: "什么东西当你说到它的名字，就把它打破了？",
-                    answer: "沉默",
-                    options: ["沉默", "玻璃", "气球"]
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = funQuestions[Math.floor(Math.random() * funQuestions.length)];
-            return {
-                question: question.question,
-                answer: question.answer,
-                options: question.options
-            };
-        }
-
-        // 生成数字推理问题
-        function generateNumberSequenceQuestion() {
-            const sequences = [
-                {
-                    question: "找出数列中的下一个数字：1, 3, 5, 7, ?",
-                    answer: "9",
-                    options: ["9", "10", "8"]
-                },
-                {
-                    question: "找出数列中的下一个数字：2, 4, 8, 16, ?",
-                    answer: "32",
-                    options: ["32", "24", "30"]
-                },
-                {
-                    question: "找出数列中的下一个数字：1, 1, 2, 3, 5, 8, ?",
-                    answer: "13",
-                    options: ["13", "12", "15"]
-                },
-                {
-                    question: "找出数列中的下一个数字：10, 9, 7, 4, ?",
-                    answer: "0",
-                    options: ["0", "1", "2"]
-                },
-                {
-                    question: "找出数列中的下一个数字：1, 4, 9, 16, 25, ?",
-                    answer: "36",
-                    options: ["36", "30", "42"]
-                }
-            ];
-            
-            // 随机选择一个问题
-            const question = sequences[Math.floor(Math.random() * sequences.length)];
-            return {
-                question: question.question,
-                answer: question.answer,
-                options: question.options
-            };
         }
 
         // 检查选项答案
@@ -1144,11 +834,117 @@
             restartBtn.classList.add('hidden');
         }
 
+        // 备用题库（当无法加载JSON文件时使用）
+        function getFallbackQuestions() {
+            return {
+                math: [
+                    {
+                        question: "3 + 5 = ?",
+                        answer: "8",
+                        options: ["8", "9", "7"]
+                    },
+                    {
+                        question: "10 - 4 = ?",
+                        answer: "6",
+                        options: ["5", "6", "7"]
+                    },
+                    {
+                        question: "6 × 7 = ?",
+                        answer: "42",
+                        options: ["40", "42", "45"]
+                    }
+                ],
+                logic: [
+                    {
+                        question: "有一个房间，里面有3盏灯，外面有3个开关。你只能进入房间一次，如何确定哪个开关控制哪盏灯？",
+                        answer: "先打开第一个开关，等几分钟后关闭，再打开第二个开关，然后进入房间。亮着的灯由第二个开关控制，发热但不亮的灯由第一个开关控制，剩下的灯由第三个开关控制。",
+                        requiresInput: true
+                    },
+                    {
+                        question: "一个人在漆黑的房间里能看到东西吗？",
+                        answer: "不能",
+                        options: ["能", "不能", "有时能"]
+                    }
+                ],
+                trivia: [
+                    {
+                        question: "什么东西越洗越脏？",
+                        answer: "水",
+                        options: ["水", "肥皂", "衣服"]
+                    },
+                    {
+                        question: "什么东西有五个头，但人不觉得它怪呢？",
+                        answer: "手或脚",
+                        options: ["手或脚", "怪物", "手套"]
+                    }
+                ],
+                word: [
+                    {
+                        question: "请找出与'高兴'意思最相近的词",
+                        answer: "快乐",
+                        options: ["快乐", "悲伤", "愤怒"]
+                    },
+                    {
+                        question: "请找出与'巨大'意思相反的词",
+                        answer: "微小",
+                        options: ["微小", "高大", "广阔"]
+                    }
+                ],
+                life: [
+                    {
+                        question: "煮鸡蛋时，如何更容易剥壳？",
+                        answer: "煮好后放入冷水中",
+                        options: [
+                            "煮好后放入冷水中",
+                            "煮的时候加醋",
+                            "煮的时间越长越好"
+                        ]
+                    },
+                    {
+                        question: "哪种食物富含维生素C？",
+                        answer: "橙子",
+                        options: ["橙子", "牛肉", "米饭"]
+                    }
+                ],
+                fun: [
+                    {
+                        question: "一个人在雨中行走，为什么他的头发没有湿？",
+                        answer: "他是光头",
+                        options: ["他是光头", "他带了伞", "雨不大"]
+                    },
+                    {
+                        question: "为什么自由女神像总是站在纽约港？",
+                        answer: "因为她不能坐下",
+                        options: [
+                            "因为她不能坐下",
+                            "那是她的工作岗位",
+                            "为了方便游客参观"
+                        ]
+                    }
+                ],
+                number: [
+                    {
+                        question: "找出数列中的下一个数字：1, 3, 5, 7, ?",
+                        answer: "9",
+                        options: ["9", "10", "8"]
+                    },
+                    {
+                        question: "找出数列中的下一个数字：2, 4, 8, 16, ?",
+                        answer: "32",
+                        options: ["32", "24", "30"]
+                    }
+                ]
+            };
+        }
+
         // 初始化游戏
-        function initGame() {
+        async function initGame() {
             initEventListeners();
             difficultyDisplay.textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
-            timerDisplay.textContent = gameState.timeLeft;
+            timerDisplay.textContent = gameState.timeLimit;
+            
+            // 加载题库
+            await loadQuestions();
         }
 
         // 页面加载完成后初始化游戏
