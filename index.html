@@ -72,146 +72,172 @@
             }
         }
     </style>
+    <style>
+        /* 针对移动设备的额外优化 */
+        @media (max-width: 640px) {
+            html {
+                font-size: 14px;
+            }
+            
+            .container {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+            
+            #game-container {
+                padding: 1.5rem !important;
+            }
+            
+            .btn-mobile {
+                padding: 0.75rem 1.5rem !important;
+                font-size: 1rem !important;
+            }
+            
+            #question {
+                font-size: 1.75rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen font-inter text-dark">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="container mx-auto px-4 py-6 max-w-4xl">
         <!-- 游戏标题 -->
-        <header class="text-center mb-10">
-            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-primary mb-2 text-shadow">益智题挑战</h1>
-            <p class="text-gray-600 text-lg">测试你的综合能力，挑战无限AI生成的益智题目！</p>
+        <header class="text-center mb-6">
+            <h1 class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-primary mb-2 text-shadow">益智题挑战</h1>
+            <p class="text-gray-600">测试你的综合能力，挑战无限AI生成的益智题目！</p>
         </header>
 
         <!-- 游戏状态 -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-            <div class="bg-white rounded-xl shadow-lg p-4 w-full md:w-auto flex items-center justify-center card-hover">
-                <i class="fa fa-trophy text-accent text-2xl mr-3"></i>
+        <div class="flex flex-wrap gap-3 justify-center mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover">
+                <i class="fa fa-trophy text-accent text-xl mr-2"></i>
                 <div>
-                    <p class="text-gray-500 text-sm">得分</p>
-                    <p id="score" class="text-2xl font-bold">0</p>
+                    <p class="text-gray-500 text-xs">得分</p>
+                    <p id="score" class="text-xl font-bold">0</p>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-4 w-full md:w-auto flex items-center justify-center card-hover">
-                <i class="fa fa-clock-o text-danger text-2xl mr-3"></i>
+            <div class="bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover">
+                <i class="fa fa-clock-o text-danger text-xl mr-2"></i>
                 <div>
-                    <p class="text-gray-500 text-sm">剩余时间</p>
-                    <p id="timer" class="text-2xl font-bold">10</p>
+                    <p class="text-gray-500 text-xs">剩余时间</p>
+                    <p id="timer" class="text-xl font-bold">10</p>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-4 w-full md:w-auto flex items-center justify-center card-hover">
-                <i class="fa fa-signal text-secondary text-2xl mr-3"></i>
+            <div class="bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover">
+                <i class="fa fa-signal text-secondary text-xl mr-2"></i>
                 <div>
-                    <p class="text-gray-500 text-sm">难度</p>
-                    <p id="difficulty" class="text-2xl font-bold">简单</p>
+                    <p class="text-gray-500 text-xs">难度</p>
+                    <p id="difficulty" class="text-xl font-bold">简单</p>
                 </div>
             </div>
             
-            <div id="question-type-indicator" class="bg-white rounded-xl shadow-lg p-4 w-full md:w-auto flex items-center justify-center card-hover">
-                <i id="type-icon" class="fa fa-calculator text-types-math text-2xl mr-3"></i>
+            <div id="question-type-indicator" class="bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover">
+                <i id="type-icon" class="fa fa-calculator text-types-math text-xl mr-2"></i>
                 <div>
-                    <p class="text-gray-500 text-sm">题目类型</p>
-                    <p id="question-type" class="text-2xl font-bold">数学运算</p>
+                    <p class="text-gray-500 text-xs">题目类型</p>
+                    <p id="question-type" class="text-xl font-bold">数学运算</p>
                 </div>
             </div>
         </div>
 
         <!-- 游戏区域 -->
-        <div id="game-container" class="bg-white rounded-2xl shadow-xl p-8 mb-8 transform transition-all duration-500 question-card">
-            <div id="question-container" class="text-center mb-8">
+        <div id="game-container" class="bg-white rounded-2xl shadow-xl p-6 mb-6 transform transition-all duration-500 question-card">
+            <div id="question-container" class="text-center mb-6">
                 <p class="text-gray-600 mb-2">当前题目</p>
-                <p id="question" class="text-3xl md:text-4xl font-bold mb-6">3 + 5 = ?</p>
+                <p id="question" class="text-2xl md:text-3xl font-bold mb-4">3 + 5 = ?</p>
                 
-                <div id="options-container" class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <button id="option1" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">8</button>
-                    <button id="option2" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">9</button>
-                    <button id="option3" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">7</button>
+                <div id="options-container" class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+                    <button id="option1" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">8</button>
+                    <button id="option2" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">9</button>
+                    <button id="option3" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">7</button>
                 </div>
                 
-                <div id="input-answer-container" class="hidden mb-8">
-                    <input type="text" id="input-answer" placeholder="输入你的答案..." class="w-full max-w-md mx-auto px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring focus:ring-primary/20 outline-none transition-all">
-                    <button id="submit-answer" class="mt-4 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
+                <div id="input-answer-container" class="hidden mb-6">
+                    <input type="text" id="input-answer" placeholder="输入你的答案..." class="w-full max-w-md mx-auto px-4 py-2 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring focus:ring-primary/20 outline-none transition-all">
+                    <button id="submit-answer" class="mt-3 bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">
                         提交答案
                     </button>
                 </div>
             </div>
             
-            <div id="feedback" class="text-center h-10 mb-4"></div>
+            <div id="feedback" class="text-center h-8 mb-3"></div>
             
-            <div id="progress-container" class="h-4 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div id="progress-container" class="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
                 <div id="progress-bar" class="h-full bg-gradient-to-r from-secondary to-primary transition-all duration-300" style="width: 100%"></div>
             </div>
         </div>
 
         <!-- 游戏控制 -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <button id="start-btn" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary/50 shadow-lg">
+        <div class="flex flex-wrap gap-3 justify-center mb-6">
+            <button id="start-btn" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary/50 shadow-lg btn-mobile">
                 <i class="fa fa-play mr-2"></i>开始游戏
             </button>
-            <button id="restart-btn" class="bg-accent hover:bg-accent/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg hidden">
+            <button id="restart-btn" class="bg-accent hover:bg-accent/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg hidden btn-mobile">
                 <i class="fa fa-refresh mr-2"></i>重新开始
             </button>
-            <button id="settings-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500/50 shadow-lg">
+            <button id="settings-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500/50 shadow-lg btn-mobile">
                 <i class="fa fa-cog mr-2"></i>设置
             </button>
         </div>
 
         <!-- 设置模态框 -->
         <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-primary">游戏设置</h2>
+            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-primary">游戏设置</h2>
                     <button id="close-settings" class="text-gray-500 hover:text-gray-700 focus:outline-none">
                         <i class="fa fa-times text-xl"></i>
                     </button>
                 </div>
                 
-                <div class="mb-6">
+                <div class="mb-4">
                     <label class="block text-gray-700 mb-2 font-medium">题目类型</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="math" checked class="mr-2 h-4 w-4 text-types-math focus:ring-types-math rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-calculator text-types-math mr-2"></i>
                                 数学运算
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="logic" checked class="mr-2 h-4 w-4 text-types-logic focus:ring-types-logic rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-puzzle-piece text-types-logic mr-2"></i>
                                 逻辑思维
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="trivia" checked class="mr-2 h-4 w-4 text-types-trivia focus:ring-types-trivia rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-lightbulb-o text-types-trivia mr-2"></i>
                                 脑筋急转弯
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="word" checked class="mr-2 h-4 w-4 text-types-word focus:ring-types-word rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-book text-types-word mr-2"></i>
                                 文字理解
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="life" checked class="mr-2 h-4 w-4 text-types-life focus:ring-types-life rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-home text-types-life mr-2"></i>
                                 生活常识
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="fun" checked class="mr-2 h-4 w-4 text-types-fun focus:ring-types-fun rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-smile-o text-types-fun mr-2"></i>
                                 趣味推理
                             </span>
                         </label>
-                        <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <label class="flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <input type="checkbox" name="question-types" value="number" checked class="mr-2 h-4 w-4 text-types-number focus:ring-types-number rounded">
                             <span class="flex items-center">
                                 <i class="fa fa-superscript text-types-number mr-2"></i>
@@ -221,7 +247,7 @@
                     </div>
                 </div>
                 
-                <div class="mb-6">
+                <div class="mb-4">
                     <label for="time-limit" class="block text-gray-700 mb-2 font-medium">每题时间限制 (秒)</label>
                     <input type="range" id="time-limit" min="5" max="30" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary">
                     <div class="flex justify-between text-sm text-gray-500 mt-1">
@@ -231,7 +257,7 @@
                     </div>
                 </div>
                 
-                <div class="mb-6">
+                <div class="mb-4">
                     <label for="difficulty-setting" class="block text-gray-700 mb-2 font-medium">难度级别</label>
                     <select id="difficulty-setting" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
                         <option value="easy">简单</option>
@@ -241,7 +267,7 @@
                 </div>
                 
                 <div class="flex justify-end">
-                    <button id="save-settings" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
+                    <button id="save-settings" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
                         保存设置
                     </button>
                 </div>
@@ -250,35 +276,35 @@
 
         <!-- 游戏结束模态框 -->
         <div id="game-over-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="game-over-content">
-                <div class="text-center mb-6">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 mb-4">
-                        <i class="fa fa-trophy text-accent text-3xl"></i>
+            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="game-over-content">
+                <div class="text-center mb-4">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/20 mb-3">
+                        <i class="fa fa-trophy text-accent text-2xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-primary mb-2">游戏结束!</h2>
+                    <h2 class="text-xl font-bold text-primary mb-2">游戏结束!</h2>
                     <p class="text-gray-600">你的表现很棒!</p>
                 </div>
                 
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3 p-3 bg-gray-50 rounded-lg">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2 p-2 bg-gray-50 rounded-lg">
                         <span class="text-gray-700">最终得分</span>
-                        <span id="final-score" class="text-2xl font-bold text-primary">0</span>
+                        <span id="final-score" class="text-xl font-bold text-primary">0</span>
                     </div>
-                    <div class="flex justify-between items-center mb-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-center mb-2 p-2 bg-gray-50 rounded-lg">
                         <span class="text-gray-700">答对题目</span>
-                        <span id="correct-answers" class="text-xl font-bold text-secondary">0</span>
+                        <span id="correct-answers" class="text-lg font-bold text-secondary">0</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
                         <span class="text-gray-700">答错题目</span>
-                        <span id="wrong-answers" class="text-xl font-bold text-danger">0</span>
+                        <span id="wrong-answers" class="text-lg font-bold text-danger">0</span>
                     </div>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="play-again" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button id="play-again" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
                         <i class="fa fa-refresh mr-2"></i>再玩一次
                     </button>
-                    <button id="share-result" class="bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg">
+                    <button id="share-result" class="bg-accent hover:bg-accent/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg">
                         <i class="fa fa-share-alt mr-2"></i>分享结果
                     </button>
                 </div>
@@ -286,7 +312,7 @@
         </div>
 
         <!-- 页脚 -->
-        <footer class="text-center text-gray-500 mt-12">
+        <footer class="text-center text-gray-500 mt-8 text-sm">
             <p>© 2025 益智题挑战 | 训练你的大脑</p>
         </footer>
     </div>
@@ -401,29 +427,8 @@
             playAgainBtn.addEventListener('click', restartGame);
             shareResultBtn.addEventListener('click', shareResult);
             timeLimitSlider.addEventListener('input', updateTimeValue);
-            
-            // 选项按钮事件
-            optionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (gameState.isPlaying) {
-                        checkAnswer(this);
-                    }
-                });
-            });
-            
-            // 提交答案按钮事件
-            submitAnswer.addEventListener('click', function() {
-                if (gameState.isPlaying) {
-                    checkInputAnswer();
-                }
-            });
-            
-            // 输入框回车提交
-            inputAnswer.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && gameState.isPlaying) {
-                    checkInputAnswer();
-                }
-            });
+            optionButtons.forEach(button => button.addEventListener('click', checkAnswer));
+            submitAnswer.addEventListener('click', checkInputAnswer);
             
             // 模态框动画
             settingsModal.addEventListener('click', (e) => {
@@ -575,6 +580,11 @@
             }, 1000);
         }
 
+        // 更新分数显示
+        function updateScore() {
+            scoreDisplay.textContent = gameState.score;
+        }
+
         // 生成问题
         function generateQuestion() {
             // 随机选择问题类型
@@ -663,9 +673,9 @@
         function updateQuestionTypeIndicator(type) {
             const config = questionTypeConfig[type];
             questionTypeDisplay.textContent = config.name;
-            questionTypeDisplay.className = `text-2xl font-bold ${config.color}`;
-            typeIcon.className = `fa ${config.icon} ${config.color} text-2xl mr-3`;
-            questionTypeIndicator.className = `bg-white rounded-xl shadow-lg p-4 w-full md:w-auto flex items-center justify-center card-hover ${config.color.replace('text-', 'border-')} border-2`;
+            questionTypeDisplay.className = `text-xl font-bold ${config.color}`;
+            typeIcon.className = `fa ${config.icon} ${config.color} text-xl mr-2`;
+            questionTypeIndicator.className = `bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover ${config.color.replace('text-', 'border-')} border-2`;
         }
 
         // 生成数学问题
@@ -704,8 +714,8 @@
                     // 减小乘法的数值范围
                     const multMin = gameState.difficulty === 'easy' ? 2 : 
                                    gameState.difficulty === 'medium' ? 5 : 10;
-                    const multMax = gameState.difficulty === 'easy' ? 5 : 
-                                   gameState.difficulty === 'medium' ? 10 : 20;
+                    const multMax = gameState.difficulty === 'easy' ? 10 : 
+                                   gameState.difficulty === 'medium' ? 20 : 30;
                     num1 = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
                     num2 = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
                     answer = num1 * num2;
@@ -721,59 +731,34 @@
                     break;
                 case 'percentage':
                     num1 = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
-                    num2 = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
-                    answer = (num1 * num2) / 100;
-                    questionText = `${num2}% of ${num1} = ?`;
+                    num2 = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+                    answer = Math.round(num1 * num2 / 100);
+                    questionText = `${num1}% 的 ${num2} 是多少?`;
                     break;
-                case 'fraction':
-                    const numerator1 = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
-                    const denominator1 = Math.floor(Math.random() * (10 - numerator1 + 1)) + numerator1;
-                    const numerator2 = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
-                    const denominator2 = Math.floor(Math.random() * (10 - numerator2 + 1)) + numerator2;
-                    
-                    // 加法分数
-                    const newNumerator = (numerator1 * denominator2) + (numerator2 * denominator1);
-                    const newDenominator = denominator1 * denominator2;
-                    
-                    // 简化分数
-                    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
-                    const divisor = gcd(newNumerator, newDenominator);
-                    const simplifiedNum = newNumerator / divisor;
-                    const simplifiedDen = newDenominator / divisor;
-                    
-                    answer = simplifiedDen === 1 ? simplifiedNum : `${simplifiedNum}/${simplifiedDen}`;
-                    questionText = `What is ${numerator1}/${denominator1} + ${numerator2}/${denominator2}?`;
-                    break;
+                default:
+                    num1 = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+                    num2 = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+                    answer = num1 + num2;
+                    questionText = `${num1} + ${num2} = ?`;
             }
             
-            // 生成选项
-            if (!options) {
-                options = [answer];
-                
-                // 生成错误选项
-                while (options.length < 3) {
-                    let wrongAnswer;
-                    if (typeof answer === 'number') {
-                        // 数值答案的错误选项
-                        const deviation = Math.floor(Math.random() * 5) + 1;
-                        wrongAnswer = answer + (Math.random() > 0.5 ? deviation : -deviation);
-                        
-                        // 确保错误选项唯一
-                        if (!options.includes(wrongAnswer)) {
-                            options.push(wrongAnswer);
-                        }
-                    } else {
-                        // 非数值答案的错误选项
-                        wrongAnswer = `错误答案${options.length + 1}`;
-                        options.push(wrongAnswer);
-                    }
-                }
+            // 生成干扰选项
+            options = [answer];
+            while (options.length < 3) {
+                let wrongAnswer;
+                do {
+                    // 根据答案大小生成合理的干扰选项
+                    const range = Math.max(1, Math.floor(answer * 0.2));
+                    wrongAnswer = answer + (Math.floor(Math.random() * (range * 2 + 1)) - range);
+                    if (wrongAnswer === answer) wrongAnswer += (Math.random() > 0.5 ? 1 : -1);
+                } while (options.includes(wrongAnswer) || wrongAnswer < 0);
+                options.push(wrongAnswer);
             }
             
             return {
                 question: questionText,
-                answer: answer,
-                options: options
+                answer: answer.toString(),
+                options: options.map(String)
             };
         }
 
@@ -781,435 +766,360 @@
         function generateLogicQuestion() {
             const logicQuestions = [
                 {
-                    question: "如果所有的猫都是动物，并且有些动物是宠物，那么可以得出：",
-                    answer: "有些猫可能是宠物",
-                    options: [
-                        "所有猫都是宠物",
-                        "有些猫可能是宠物",
-                        "没有猫是宠物"
-                    ]
+                    question: "有一个房间，里面有3盏灯，外面有3个开关。你只能进入房间一次，如何确定哪个开关控制哪盏灯？",
+                    answer: "先打开第一个开关，等几分钟后关闭，再打开第二个开关，然后进入房间。亮着的灯由第二个开关控制，发热但不亮的灯由第一个开关控制，剩下的灯由第三个开关控制。",
+                    requiresInput: true
                 },
                 {
-                    question: "如果今天下雨，我就带伞。今天我带了伞，所以：",
-                    answer: "今天可能下雨",
-                    options: [
-                        "今天一定下雨",
-                        "今天可能下雨",
-                        "今天一定没下雨"
-                    ]
+                    question: "一个人在漆黑的房间里能看到东西吗？",
+                    answer: "不能",
+                    options: ["能", "不能", "有时能"]
                 },
                 {
-                    question: "在一个房间里，有三个人：A说B在说谎，B说C在说谎，C说A和B都在说谎。谁说的是真话？",
-                    answer: "B",
-                    options: [
-                        "A",
-                        "B",
-                        "C"
-                    ]
+                    question: "如果5只猫5分钟能捉5只老鼠，那么100只猫捉100只老鼠需要多长时间？",
+                    answer: "5分钟",
+                    options: ["5分钟", "10分钟", "100分钟"]
                 },
                 {
-                    question: "如果所有的鸟都会飞，企鹅是鸟，那么：",
-                    answer: "该前提存在矛盾",
-                    options: [
-                        "企鹅会飞",
-                        "企鹅不会飞",
-                        "该前提存在矛盾"
-                    ]
+                    question: "一个家庭有两个孩子，其中一个是男孩，另一个也是男孩的概率是多少？",
+                    answer: "1/3",
+                    options: ["1/2", "1/3", "1/4"]
                 },
                 {
-                    question: "有一个数字，去掉首位是13，去掉末位是40，这个数字是多少？",
-                    answer: "四十三",
-                    options: [
-                        "43",
-                        "313",
-                        "四十三"
-                    ]
-                },
-                {
-                    question: "如果昨天是明天，那么今天就是周五。实际上今天是星期几？",
-                    answer: "星期日",
-                    options: [
-                        "星期三",
-                        "星期五",
-                        "星期日"
-                    ]
-                },
-                {
-                    question: "我有两枚硬币，总价值是30美分。其中一枚不是镍币（5美分）。这两枚硬币分别是什么？",
-                    answer: "一枚25美分，一枚5美分",
-                    options: [
-                        "两枚15美分",
-                        "一枚25美分，一枚5美分",
-                        "一枚30美分"
-                    ]
-                },
-                {
-                    question: "在一条街上，有5座房子，喷了5种颜色。每个房子里住着不同国籍的人。每个人喝不同的饮料，抽不同品牌的香烟，养不同的宠物。已知：英国人住红色房子；瑞典人养狗；丹麦人喝茶；绿色房子在白色房子左面；绿色房子主人喝咖啡；抽Pall Mall香烟的人养鸟；黄色房子主人抽Dunhill；住在中间房子的人喝牛奶；挪威人住第一间房；抽Blends香烟的人有一个喝水的邻居。问题是：谁养鱼？",
-                    answer: "德国人",
-                    options: [
-                        "英国人",
-                        "德国人",
-                        "挪威人"
-                    ]
+                    question: "有10个袋子，每个袋子有10枚金币，其中9个袋子里的金币每个重10克，只有一个袋子里的金币每个重9克。如何只称一次就找出那个装9克金币的袋子？",
+                    answer: "从第1个袋子取1枚，第2个取2枚...第10个取10枚，一起称重。总重量比550克少几克，就是第几个袋子。",
+                    requiresInput: true
                 }
             ];
             
-            // 根据难度调整问题池
-            let filteredQuestions = logicQuestions;
-            if (gameState.difficulty === 'easy') {
-                filteredQuestions = logicQuestions.filter(q => q.options.length <= 3);
-            } else if (gameState.difficulty === 'hard') {
-                // 可以在这里添加更难的逻辑问题
-            }
+            // 随机选择一个问题
+            const question = logicQuestions[Math.floor(Math.random() * logicQuestions.length)];
             
-            const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
-            return filteredQuestions[randomIndex];
+            if (question.requiresInput) {
+                return {
+                    question: question.question,
+                    answer: question.answer.toLowerCase()
+                };
+            } else {
+                return {
+                    question: question.question,
+                    answer: question.answer,
+                    options: question.options
+                };
+            }
         }
 
         // 生成脑筋急转弯问题
         function generateTriviaQuestion() {
             const triviaQuestions = [
                 {
-                    question: "什么东西越洗越脏，不洗有人吃，洗了没人吃？",
+                    question: "什么东西越洗越脏？",
                     answer: "水",
-                    options: ["水", "空气", "肥皂"]
+                    options: ["水", "肥皂", "衣服"]
                 },
                 {
-                    question: "什么东西越生气，它就越大？",
-                    answer: "脾气",
-                    options: ["气球", "脾气", "火"]
+                    question: "什么东西有五个头，但人不觉得它怪呢？",
+                    answer: "手或脚",
+                    options: ["手或脚", "怪物", "手套"]
                 },
                 {
-                    question: "什么东西打破了才能吃？",
-                    answer: "鸡蛋",
-                    options: ["鸡蛋", "糖果", "面包"]
+                    question: "什么东西晚上才会长出尾巴？",
+                    answer: "流星",
+                    options: ["流星", "月亮", "松鼠"]
                 },
                 {
-                    question: "什么东西越用越有钱？",
-                    answer: "存钱罐",
-                    options: ["存钱罐", "银行卡", "钱包"]
+                    question: "什么东西越热越爱出来？",
+                    answer: "汗",
+                    options: ["汗", "冰淇淋", "太阳"]
                 },
                 {
-                    question: "什么东西越跑越慢？",
-                    answer: "电池",
-                    options: ["电池", "汽车", "时钟"]
+                    question: "什么东西人们在不停地吃它，却永远吃不饱？",
+                    answer: "空气",
+                    options: ["空气", "水", "零食"]
                 },
                 {
-                    question: "什么东西越冷越爱出来？",
-                    answer: "霜",
-                    options: ["霜", "太阳", "雪人"]
-                },
-                {
-                    question: "什么东西越老越年轻？",
-                    answer: "照片",
-                    options: ["照片", "葡萄酒", "古董"]
-                },
-                {
-                    question: "什么东西越短越好用？",
-                    answer: "铅笔",
-                    options: ["铅笔", "绳子", "尺子"]
+                    question: "什么东西能加不能减？",
+                    answer: "年龄",
+                    options: ["年龄", "体重", "钱"]
                 }
             ];
             
-            const randomIndex = Math.floor(Math.random() * triviaQuestions.length);
-            return triviaQuestions[randomIndex];
+            // 随机选择一个问题
+            const question = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+            return {
+                question: question.question,
+                answer: question.answer,
+                options: question.options
+            };
         }
 
-        // 生成文字问题
+        // 生成文字理解问题
         function generateWordQuestion() {
             const wordQuestions = [
                 {
-                    question: "找出不同类的单词：苹果、香蕉、草莓、西红柿",
-                    answer: "西红柿",
-                    options: ["苹果", "香蕉", "西红柿"]
+                    question: "请找出与'高兴'意思最相近的词",
+                    answer: "快乐",
+                    options: ["快乐", "悲伤", "愤怒"]
                 },
                 {
-                    question: "下面哪个是中国的直辖市？",
-                    answer: "重庆",
-                    options: ["重庆", "成都", "武汉"]
+                    question: "请找出与'巨大'意思相反的词",
+                    answer: "微小",
+                    options: ["微小", "高大", "广阔"]
                 },
                 {
-                    question: "哪个字可以和“日”、“木”、“口”、“田”都能组成新的字？",
-                    answer: "木",
-                    options: ["木", "火", "土"]
+                    question: "'画蛇添足'这个成语的意思是？",
+                    answer: "做了多余的事，反而不合适",
+                    options: [
+                        "做了多余的事，反而不合适",
+                        "画画技巧高超",
+                        "蛇的样子很奇怪"
+                    ]
                 },
                 {
-                    question: "“但愿人长久”的下一句是什么？",
-                    answer: "千里共婵娟",
-                    options: ["千里共婵娟", "润物细无声", "更上一层楼"]
+                    question: "'一箭双雕'这个成语比喻什么？",
+                    answer: "做一件事达到两个目的",
+                    options: [
+                        "做一件事达到两个目的",
+                        "射箭技术高超",
+                        "雕的数量很多"
+                    ]
                 },
                 {
-                    question: "“推敲”一词来源于哪位诗人的故事？",
-                    answer: "贾岛",
-                    options: ["李白", "贾岛", "杜甫"]
-                },
-                {
-                    question: "“三人行，必有我师焉”出自哪部著作？",
-                    answer: "论语",
-                    options: ["论语", "孟子", "道德经"]
-                },
-                {
-                    question: "“横看成岭侧成峰”的下一句是什么？",
-                    answer: "远近高低各不同",
-                    options: ["远近高低各不同", "只缘身在此山中", "不识庐山真面目"]
-                },
-                {
-                    question: "“少壮不努力”的下一句是什么？",
-                    answer: "老大徒伤悲",
-                    options: ["老大徒伤悲", "黄河入海流", "处处闻啼鸟"]
+                    question: "下列哪个词语是描写天气的？",
+                    answer: "晴空万里",
+                    options: ["晴空万里", "眉清目秀", "四面八方"]
                 }
             ];
             
-            const randomIndex = Math.floor(Math.random() * wordQuestions.length);
-            return wordQuestions[randomIndex];
+            // 随机选择一个问题
+            const question = wordQuestions[Math.floor(Math.random() * wordQuestions.length)];
+            return {
+                question: question.question,
+                answer: question.answer,
+                options: question.options
+            };
         }
 
         // 生成生活常识问题
         function generateLifeQuestion() {
             const lifeQuestions = [
                 {
-                    question: "人体最坚硬的部分是什么？",
-                    answer: "牙齿",
-                    options: ["牙齿", "骨骼", "指甲"]
+                    question: "煮鸡蛋时，如何更容易剥壳？",
+                    answer: "煮好后放入冷水中",
+                    options: [
+                        "煮好后放入冷水中",
+                        "煮的时候加醋",
+                        "煮的时间越长越好"
+                    ]
                 },
                 {
-                    question: "以下哪种食物富含维生素C？",
+                    question: "哪种食物富含维生素C？",
                     answer: "橙子",
-                    options: ["橙子", "香蕉", "土豆"]
+                    options: ["橙子", "牛肉", "米饭"]
                 },
                 {
-                    question: "被称为“维生素的宝库”的是哪种食物？",
-                    answer: "肝脏",
-                    options: ["肝脏", "鸡蛋", "牛奶"]
+                    question: "家用电器着火时，首先应该做什么？",
+                    answer: "切断电源",
+                    options: ["切断电源", "用水浇灭", "用布盖住"]
                 },
                 {
-                    question: "以下哪种动物会冬眠？",
-                    answer: "熊",
-                    options: ["熊", "狗", "猫"]
+                    question: "下列哪种做法有助于节约用水？",
+                    answer: "用洗菜水浇花",
+                    options: [
+                        "用洗菜水浇花",
+                        "开着水龙头刷牙",
+                        "频繁冲洗马桶"
+                    ]
                 },
                 {
-                    question: "以下哪种植物可以吸收空气中的甲醛？",
-                    answer: "绿萝",
-                    options: ["绿萝", "仙人掌", "富贵竹"]
-                },
-                {
-                    question: "被蚊子叮咬后，涂哪种东西可以止痒？",
-                    answer: "肥皂水",
-                    options: ["肥皂水", "热水", "酒精"]
-                },
-                {
-                    question: "以下哪种水果不能空腹吃？",
-                    answer: "香蕉",
-                    options: ["香蕉", "苹果", "葡萄"]
-                },
-                {
-                    question: "人每天需要喝多少水？",
-                    answer: "1.5-2升",
-                    options: ["1.5-2升", "0.5-1升", "3-4升"]
+                    question: "正常成年人的体温大约是多少？",
+                    answer: "37℃左右",
+                    options: ["37℃左右", "35℃左右", "39℃左右"]
                 }
             ];
             
-            const randomIndex = Math.floor(Math.random() * lifeQuestions.length);
-            return lifeQuestions[randomIndex];
+            // 随机选择一个问题
+            const question = lifeQuestions[Math.floor(Math.random() * lifeQuestions.length)];
+            return {
+                question: question.question,
+                answer: question.answer,
+                options: question.options
+            };
         }
 
         // 生成趣味推理问题
         function generateFunQuestion() {
             const funQuestions = [
                 {
-                    question: "有一个人在沙漠中，头朝下死了，身边散落着几个行李箱子，而这个人手里紧紧地抓着半根火柴，推理这个人是怎么死的？",
-                    answer: "他和伙伴一起乘热气球，途中出了故障，必须减轻重量，于是大家抽签决定由谁做出牺牲，跳下热气球。此人不幸抽中不祥的半根火柴，连同行李一起被人扔下热气球。",
-                    options: ["渴死的", "被人谋杀", "从热气球上掉下来摔死的"]
+                    question: "一个人在雨中行走，为什么他的头发没有湿？",
+                    answer: "他是光头",
+                    options: ["他是光头", "他带了伞", "雨不大"]
                 },
                 {
-                    question: "一个人住在山顶的小屋里，半夜听见有敲门的，他打开门却没有人，于是去睡了。等了一会又有敲门声，去开门，还是没人，如是者几次。第二天，有人在山脚下发现死尸一具，警察来把山顶的那人带走了。为什么？",
-                    answer: "因为他的门开在悬崖边，那个人好不容易爬上来，他门一开，就被推下去了。如此几次，破了气门而亡。",
-                    options: ["他梦游杀人", "敲门的人自己摔死的", "门开在悬崖边，每次开门都把人推下去"]
+                    question: "为什么自由女神像总是站在纽约港？",
+                    answer: "因为她不能坐下",
+                    options: [
+                        "因为她不能坐下",
+                        "那是她的工作岗位",
+                        "为了方便游客参观"
+                    ]
                 },
                 {
-                    question: "有母女三人，母亲死了，姐妹俩去参加葬礼。妹妹在葬礼上遇见了一个很有型的男子，并对他一见倾心。回到家后，妹妹把姐姐杀了。为什么？",
-                    answer: "因为家里如果再死一个人，又可以举行一次葬礼，那个男子又会来参加葬礼，妹妹就又可以见到他了。",
-                    options: ["妹妹嫉妒姐姐", "男子是姐姐的男友", "为了再次见到那个男子"]
+                    question: "什么东西买的人知道，卖的人也知道，只有用的人不知道？",
+                    answer: "棺材",
+                    options: ["棺材", "礼物", "药品"]
                 },
                 {
-                    question: "有一个人在河边散步，突然听到有人喊救命。他急忙跑过去，发现有一个人正在河里挣扎。他想都没想就跳进河里救人。当他把人救上岸后，却发现自己的鞋子不见了。为什么？",
-                    answer: "因为他是光着脚跳下去的，所以鞋子还在岸上。",
-                    options: ["被水冲走了", "被河里的鱼叼走了", "他是光着脚跳下去的"]
+                    question: "为什么数学书总是很忧郁？",
+                    answer: "因为它有太多的问题",
+                    options: [
+                        "因为它有太多的问题",
+                        "它很难懂",
+                        "它很厚重"
+                    ]
                 },
                 {
-                    question: "有一个人在沙漠中行走，他带了足够的水和食物，但还是死了。为什么？",
-                    answer: "他是被自己的降落伞压死的。他本来想跳伞，但降落伞没有打开，他摔死了，但是降落伞还在他身上。",
-                    options: ["饿死的", "渴死的", "被降落伞压死的"]
-                },
-                {
-                    question: "有一个人在森林中迷路了，他看到了一间小屋。他走进去，发现里面有一张桌子，上面有一盏油灯和一根蜡烛。他只有一根火柴，他应该先点燃什么？",
-                    answer: "火柴",
-                    options: ["油灯", "蜡烛", "火柴"]
+                    question: "什么东西当你说到它的名字，就把它打破了？",
+                    answer: "沉默",
+                    options: ["沉默", "玻璃", "气球"]
                 }
             ];
             
-            const randomIndex = Math.floor(Math.random() * funQuestions.length);
-            return funQuestions[randomIndex];
+            // 随机选择一个问题
+            const question = funQuestions[Math.floor(Math.random() * funQuestions.length)];
+            return {
+                question: question.question,
+                answer: question.answer,
+                options: question.options
+            };
         }
 
-        // 生成数字序列问题
+        // 生成数字推理问题
         function generateNumberSequenceQuestion() {
             const sequences = [
                 {
-                    question: "1, 3, 5, 7, 9, ?",
-                    answer: "11",
-                    options: ["10", "11", "12"]
+                    question: "找出数列中的下一个数字：1, 3, 5, 7, ?",
+                    answer: "9",
+                    options: ["9", "10", "8"]
                 },
                 {
-                    question: "2, 4, 8, 16, 32, ?",
-                    answer: "64",
-                    options: ["48", "64", "128"]
+                    question: "找出数列中的下一个数字：2, 4, 8, 16, ?",
+                    answer: "32",
+                    options: ["32", "24", "30"]
                 },
                 {
-                    question: "1, 4, 9, 16, 25, ?",
-                    answer: "36",
-                    options: ["30", "36", "49"]
-                },
-                {
-                    question: "1, 1, 2, 3, 5, 8, ?",
+                    question: "找出数列中的下一个数字：1, 1, 2, 3, 5, 8, ?",
                     answer: "13",
-                    options: ["10", "13", "15"]
+                    options: ["13", "12", "15"]
                 },
                 {
-                    question: "3, 6, 9, 12, 15, ?",
-                    answer: "18",
-                    options: ["16", "18", "20"]
+                    question: "找出数列中的下一个数字：10, 9, 7, 4, ?",
+                    answer: "0",
+                    options: ["0", "1", "2"]
                 },
                 {
-                    question: "1, 3, 7, 15, 31, ?",
-                    answer: "63",
-                    options: ["47", "63", "65"]
-                },
-                {
-                    question: "2, 6, 12, 20, 30, ?",
-                    answer: "42",
-                    options: ["36", "42", "48"]
-                },
-                {
-                    question: "5, 10, 20, 40, 80, ?",
-                    answer: "160",
-                    options: ["120", "160", "200"]
+                    question: "找出数列中的下一个数字：1, 4, 9, 16, 25, ?",
+                    answer: "36",
+                    options: ["36", "30", "42"]
                 }
             ];
             
-            // 根据难度调整问题池
-            let filteredSequences = sequences;
-            if (gameState.difficulty === 'easy') {
-                filteredSequences = sequences.filter(s => s.answer < 50);
-            } else if (gameState.difficulty === 'hard') {
-                // 可以在这里添加更难的数字序列
-            }
-            
-            const randomIndex = Math.floor(Math.random() * filteredSequences.length);
-            return filteredSequences[randomIndex];
+            // 随机选择一个问题
+            const question = sequences[Math.floor(Math.random() * sequences.length)];
+            return {
+                question: question.question,
+                answer: question.answer,
+                options: question.options
+            };
         }
 
         // 检查选项答案
-        function checkAnswer(button) {
-            const selectedAnswer = button.textContent;
-            const correctAnswer = gameState.currentQuestion.answer.toString();
+        function checkAnswer(e) {
+            if (!gameState.isPlaying) return;
             
-            // 禁用所有按钮
-            optionButtons.forEach(btn => {
-                btn.disabled = true;
-                
-                // 显示正确和错误的答案
-                if (btn.textContent.toString() === correctAnswer) {
-                    btn.classList.remove(questionTypeConfig[gameState.currentQuestion.type].buttonColor);
-                    btn.classList.add('bg-secondary');
-                } else if (btn === button) {
-                    btn.classList.remove(questionTypeConfig[gameState.currentQuestion.type].buttonColor);
-                    btn.classList.add('bg-danger');
+            clearInterval(gameState.timerInterval);
+            const selectedAnswer = e.target.textContent;
+            
+            // 禁用所有选项按钮
+            optionButtons.forEach(button => {
+                button.disabled = true;
+                if (button.textContent === gameState.currentQuestion.answer) {
+                    button.classList.remove(questionTypeConfig[gameState.currentQuestion.type].buttonColor);
+                    button.classList.add('bg-secondary');
+                } else if (button === e.target) {
+                    button.classList.remove(questionTypeConfig[gameState.currentQuestion.type].buttonColor);
+                    button.classList.add('bg-danger');
+                } else {
+                    button.classList.add('opacity-70');
                 }
-                
-                btn.classList.add('opacity-70');
             });
             
-            // 停止计时器
-            clearInterval(gameState.timerInterval);
-            
-            // 检查答案
-            if (selectedAnswer === correctAnswer) {
+            // 判断答案是否正确
+            if (selectedAnswer === gameState.currentQuestion.answer) {
                 handleCorrectAnswer();
             } else {
                 handleWrongAnswer();
             }
-            
-            // 延迟后生成下一题
-            setTimeout(generateQuestion, 2000);
-            setTimeout(startTimer, 2000);
         }
 
         // 检查输入答案
         function checkInputAnswer() {
-            const userAnswer = inputAnswer.value.trim();
-            const correctAnswer = gameState.currentQuestion.answer.toString();
+            if (!gameState.isPlaying || !inputAnswer.value.trim()) return;
             
-            // 停止计时器
             clearInterval(gameState.timerInterval);
+            const userAnswer = inputAnswer.value.trim().toLowerCase();
             
-            // 检查答案
-            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+            // 判断答案是否正确（考虑一些常见的同义表达）
+            if (userAnswer === gameState.currentQuestion.answer.toLowerCase() ||
+                (gameState.currentQuestion.answer.includes("或") && 
+                 gameState.currentQuestion.answer.toLowerCase().split("或").some(ans => userAnswer === ans.trim()))) {
                 handleCorrectAnswer();
             } else {
                 handleWrongAnswer();
-                feedbackDisplay.innerHTML = `正确答案是: <span class="text-secondary font-bold">${correctAnswer}</span>`;
             }
             
-            // 禁用按钮
+            // 禁用输入和提交按钮
+            inputAnswer.disabled = true;
             submitAnswer.disabled = true;
-            
-            // 延迟后生成下一题
-            setTimeout(() => {
-                generateQuestion();
-                startTimer();
-                submitAnswer.disabled = false;
-            }, 2000);
         }
 
         // 处理正确答案
         function handleCorrectAnswer() {
-            gameState.score += 10;
+            gameState.score += 10 + gameState.timeLeft; // 得分基于剩余时间
             gameState.correctAnswers++;
             updateScore();
             
-            // 显示正确反馈
-            feedbackDisplay.innerHTML = '<span class="text-secondary font-bold"><i class="fa fa-check-circle mr-2"></i>回答正确!</span>';
+            feedbackDisplay.textContent = "正确！";
+            feedbackDisplay.className = "text-center h-10 mb-4 text-secondary font-bold fade-in";
             
-            // 添加正确动画
-            gameContainer.classList.add('border-secondary', 'border-4');
+            // 延迟生成下一题
             setTimeout(() => {
-                gameContainer.classList.remove('border-secondary', 'border-4');
-            }, 1500);
+                inputAnswer.disabled = false;
+                submitAnswer.disabled = false;
+                generateQuestion();
+                startTimer();
+            }, 1000);
         }
 
         // 处理错误答案
         function handleWrongAnswer() {
             gameState.wrongAnswers++;
             
-            // 显示错误反馈
-            feedbackDisplay.innerHTML = '<span class="text-danger font-bold"><i class="fa fa-times-circle mr-2"></i>回答错误!</span>';
+            feedbackDisplay.textContent = `错误！正确答案是: ${gameState.currentQuestion.answer}`;
+            feedbackDisplay.className = "text-center h-10 mb-4 text-danger font-bold fade-in";
             
-            // 添加错误动画
-            gameContainer.classList.add('border-danger', 'border-4', 'animate-shake');
-            setTimeout(() => {
-                gameContainer.classList.remove('border-danger', 'border-4', 'animate-shake');
-            }, 1500);
-            
-            // 如果是最后一题，结束游戏
+            // 如果错误次数达到3次，游戏结束
             if (gameState.wrongAnswers >= 3) {
                 endGame();
+            } else {
+                // 延迟生成下一题
+                setTimeout(() => {
+                    inputAnswer.disabled = false;
+                    submitAnswer.disabled = false;
+                    generateQuestion();
+                    startTimer();
+                }, 2000);
             }
-        }
-
-        // 更新分数
-        function updateScore() {
-            scoreDisplay.textContent = gameState.score;
         }
 
         // 结束游戏
@@ -1217,7 +1127,7 @@
             gameState.isPlaying = false;
             clearInterval(gameState.timerInterval);
             
-            // 更新游戏结束模态框内容
+            // 更新游戏结束模态框
             finalScoreDisplay.textContent = gameState.score;
             correctAnswersDisplay.textContent = gameState.correctAnswers;
             wrongAnswersDisplay.textContent = gameState.wrongAnswers;
@@ -1229,28 +1139,20 @@
                 gameOverContent.classList.add('scale-100', 'opacity-100');
             }, 10);
             
-            // 重置UI
+            // 重置按钮状态
             startBtn.classList.remove('hidden');
             restartBtn.classList.add('hidden');
         }
 
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', () => {
+        // 初始化游戏
+        function initGame() {
             initEventListeners();
-            // 添加动画类
-            document.head.insertAdjacentHTML('beforeend', `
-                <style>
-                    @keyframes shake {
-                        0%, 100% { transform: translateX(0); }
-                        25% { transform: translateX(-5px); }
-                        75% { transform: translateX(5px); }
-                    }
-                    .animate-shake {
-                        animation: shake 0.5s ease-in-out;
-                    }
-                </style>
-            `);
-        });
+            difficultyDisplay.textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
+            timerDisplay.textContent = gameState.timeLeft;
+        }
+
+        // 页面加载完成后初始化游戏
+        document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
