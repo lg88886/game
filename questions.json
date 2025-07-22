@@ -1,6 +1,6 @@
 {
   "math": {
-    "description": "数学运算类题目，包含基础运算、代数和几何问题",
+    "description": "数学运算",
     "questions": [
       {
         "question": "3 + 5 × 2 = ?",
