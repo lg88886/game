@@ -73,7 +73,6 @@
         }
     </style>
     <style>
-        /* 针对移动设备的额外优化 */
         @media (max-width: 640px) {
             html {
                 font-size: 14px;
@@ -101,20 +100,20 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen font-inter text-dark">
     <div class="container mx-auto px-4 py-6 max-w-4xl">
-        <!-- 游戏标题 -->
-        <header class="text-center mb-6">
-            <h1 class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-primary mb-2 text-shadow">益智题挑战</h1>
-            <p class="text-gray-600">测试你的综合能力，挑战无限AI生成的益智题目！</p>
-        </header>
-
-        <!-- 当前玩家显示 -->
-        <div id="current-player-container" class="bg-white rounded-xl shadow-lg p-3 mb-6 flex items-center justify-center hidden">
-            <i class="fa fa-user-circle text-primary text-xl mr-2"></i>
-            <p class="text-gray-700">当前玩家: <span id="current-player-name" class="font-bold text-primary">未选择</span></p>
+        <!-- 加载提示 -->
+        <div id="loading-indicator" class="text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+            <p class="text-gray-600">正在加载题库，请稍候...</p>
         </div>
 
+        <!-- 游戏标题 -->
+        <header class="text-center mb-6 hidden" id="game-header">
+            <h1 class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-primary mb-2 text-shadow">益智题挑战</h1>
+            <p class="text-gray-600">测试你的综合能力，挑战各类益智题目！</p>
+        </header>
+
         <!-- 游戏状态 -->
-        <div class="flex flex-wrap gap-3 justify-center mb-6">
+        <div class="flex flex-wrap gap-3 justify-center mb-6 hidden" id="game-stats">
             <div class="bg-white rounded-xl shadow-lg p-3 w-[45%] flex items-center justify-center card-hover">
                 <i class="fa fa-trophy text-accent text-xl mr-2"></i>
                 <div>
@@ -149,7 +148,7 @@
         </div>
 
         <!-- 游戏区域 -->
-        <div id="game-container" class="bg-white rounded-2xl shadow-xl p-6 mb-6 transform transition-all duration-500 question-card">
+        <div id="game-container" class="bg-white rounded-2xl shadow-xl p-6 mb-6 transform transition-all duration-500 question-card hidden">
             <div id="question-container" class="text-center mb-6">
                 <p class="text-gray-600 mb-2">当前题目</p>
                 <p id="question" class="text-2xl md:text-3xl font-bold mb-4">3 + 5 = ?</p>
@@ -176,7 +175,7 @@
         </div>
 
         <!-- 游戏控制 -->
-        <div class="flex flex-wrap gap-3 justify-center mb-6">
+        <div class="flex flex-wrap gap-3 justify-center mb-6 hidden" id="game-controls">
             <button id="start-btn" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary/50 shadow-lg btn-mobile">
                 <i class="fa fa-play mr-2"></i>开始游戏
             </button>
@@ -186,76 +185,9 @@
             <button id="settings-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500/50 shadow-lg btn-mobile">
                 <i class="fa fa-cog mr-2"></i>设置
             </button>
-            <button id="highscores-btn" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">
-                <i class="fa fa-star mr-2"></i>高分榜
+            <button id="leaderboard-btn" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg btn-mobile">
+                <i class="fa fa-list-ol mr-2"></i>排行榜
             </button>
-            <button id="change-player-btn" class="bg-accent hover:bg-accent/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg btn-mobile hidden">
-                <i class="fa fa-user mr-2"></i>切换玩家
-            </button>
-        </div>
-
-        <!-- 玩家选择模态框 -->
-        <div id="player-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="player-modal-content">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-primary">选择或创建玩家</h2>
-                    <button id="close-player-modal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                        <i class="fa fa-times text-xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-4">
-                    <input type="text" id="new-player-name" placeholder="输入新玩家名称..." class="w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring focus:ring-primary/20 outline-none transition-all mb-4">
-                    <button id="add-player-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
-                        添加新玩家
-                    </button>
-                </div>
-                
-                <div class="mb-4">
-                    <h3 class="text-gray-700 mb-2 font-medium">已有玩家</h3>
-                    <div id="players-list" class="max-h-40 overflow-y-auto space-y-2">
-                        <!-- 玩家列表将动态生成 -->
-                    </div>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button id="select-player-btn" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary/50 shadow-lg" disabled>
-                        选择玩家
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 高分榜模态框 -->
-        <div id="highscores-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="highscores-modal-content">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-primary">高分榜</h2>
-                    <button id="close-highscores" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                        <i class="fa fa-times text-xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-gray-700 font-medium">所有玩家排名</h3>
-                        <select id="highscores-filter" class="p-1 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
-                            <option value="all">全部</option>
-                            <option value="current">当前玩家</option>
-                        </select>
-                    </div>
-                    
-                    <div id="highscores-list" class="space-y-2 max-h-80 overflow-y-auto">
-                        <!-- 高分榜将动态生成 -->
-                    </div>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button id="close-highscores-btn" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
-                        关闭
-                    </button>
-                </div>
-            </div>
         </div>
 
         <!-- 设置模态框 -->
@@ -376,13 +308,6 @@
                     </div>
                 </div>
                 
-                <div class="mb-4">
-                    <div id="highscore-indicator" class="bg-accent/10 text-accent p-3 rounded-lg text-center hidden">
-                        <i class="fa fa-star mr-1"></i>
-                        <span id="highscore-message">新的个人最佳成绩!</span>
-                    </div>
-                </div>
-                
                 <div class="flex flex-col sm:flex-row gap-3 justify-center">
                     <button id="play-again" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
                         <i class="fa fa-refresh mr-2"></i>再玩一次
@@ -394,8 +319,64 @@
             </div>
         </div>
 
+        <!-- 玩家名称输入模态框 -->
+        <div id="player-name-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="name-modal-content">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-primary">输入你的名字</h2>
+                    <p class="text-gray-600">以便记录你的精彩成绩</p>
+                </div>
+                
+                <div class="mb-4">
+                    <input type="text" id="player-name" placeholder="请输入你的名字..." class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-primary focus:ring focus:ring-primary/20 outline-none transition-all" maxlength="15">
+                    <p class="text-gray-500 text-sm mt-1 text-right">最多15个字符</p>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="save-name-btn" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 排行榜模态框 -->
+        <div id="leaderboard-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-md w-full mx-3 transform transition-all duration-300 scale-95 opacity-0" id="leaderboard-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-primary">得分排行榜</h2>
+                    <button id="close-leaderboard" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-4 max-h-96 overflow-y-auto pr-2">
+                    <div id="leaderboard-list" class="space-y-2">
+                        <!-- 排行榜内容将通过JS动态生成 -->
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="clear-leaderboard" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500/50 shadow-lg">
+                        <i class="fa fa-trash mr-2"></i>清空记录
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载错误提示 -->
+        <div id="load-error" class="text-center py-10 hidden">
+            <div class="inline-block text-danger text-4xl mb-4">
+                <i class="fa fa-exclamation-circle"></i>
+            </div>
+            <p class="text-gray-600 mb-4">题库加载失败</p>
+            <button id="retry-load" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg">
+                重试加载
+            </button>
+        </div>
+
         <!-- 页脚 -->
-        <footer class="text-center text-gray-500 mt-8 text-sm">
+        <footer class="text-center text-gray-500 mt-8 text-sm hidden" id="footer">
             <p>© 2025 益智题挑战 | 训练你的大脑</p>
         </footer>
     </div>
@@ -414,10 +395,7 @@
             questionTypes: ['math', 'logic', 'trivia', 'word', 'life', 'fun', 'number'],
             timeLimit: 60,
             questions: null, // 从JSON加载的题库
-            usedQuestions: {}, // 记录已使用的题目索引，避免重复
-            currentPlayer: null, // 当前玩家
-            players: [], // 所有玩家
-            highscores: [] // 高分记录
+            usedQuestions: {} // 记录已使用的题目索引，避免重复
         };
 
         // 题目类型配置
@@ -466,6 +444,12 @@
             }
         };
 
+        // 排行榜相关游戏状态
+        const leaderboardState = {
+            playerName: localStorage.getItem('puzzleGamePlayerName') || '',
+            scores: JSON.parse(localStorage.getItem('puzzleGameScores')) || []
+        };
+
         // DOM 元素
         const startBtn = document.getElementById('start-btn');
         const restartBtn = document.getElementById('restart-btn');
@@ -504,25 +488,25 @@
         const questionTypeIndicator = document.getElementById('question-type-indicator');
         const questionTypeDisplay = document.getElementById('question-type');
         const typeIcon = document.getElementById('type-icon');
-        const highscoresBtn = document.getElementById('highscores-btn');
-        const highscoresModal = document.getElementById('highscores-modal');
-        const highscoresModalContent = document.getElementById('highscores-modal-content');
-        const closeHighscoresBtn = document.getElementById('close-highscores-btn');
-        const closeHighscoresX = document.getElementById('close-highscores');
-        const highscoresList = document.getElementById('highscores-list');
-        const highscoresFilter = document.getElementById('highscores-filter');
-        const playerModal = document.getElementById('player-modal');
-        const playerModalContent = document.getElementById('player-modal-content');
-        const closePlayerModal = document.getElementById('close-player-modal');
-        const newPlayerName = document.getElementById('new-player-name');
-        const addPlayerBtn = document.getElementById('add-player-btn');
-        const playersList = document.getElementById('players-list');
-        const selectPlayerBtn = document.getElementById('select-player-btn');
-        const currentPlayerContainer = document.getElementById('current-player-container');
-        const currentPlayerName = document.getElementById('current-player-name');
-        const changePlayerBtn = document.getElementById('change-player-btn');
-        const highscoreIndicator = document.getElementById('highscore-indicator');
-        const highscoreMessage = document.getElementById('highscore-message');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const loadError = document.getElementById('load-error');
+        const retryLoadBtn = document.getElementById('retry-load');
+        const gameHeader = document.getElementById('game-header');
+        const gameStats = document.getElementById('game-stats');
+        const gameControls = document.getElementById('game-controls');
+        const footer = document.getElementById('footer');
+        
+        // 新增DOM元素
+        const leaderboardBtn = document.getElementById('leaderboard-btn');
+        const leaderboardModal = document.getElementById('leaderboard-modal');
+        const leaderboardContent = document.getElementById('leaderboard-content');
+        const closeLeaderboardBtn = document.getElementById('close-leaderboard');
+        const leaderboardList = document.getElementById('leaderboard-list');
+        const clearLeaderboardBtn = document.getElementById('clear-leaderboard');
+        const playerNameModal = document.getElementById('player-name-modal');
+        const nameModalContent = document.getElementById('name-modal-content');
+        const playerNameInput = document.getElementById('player-name');
+        const saveNameBtn = document.getElementById('save-name-btn');
 
         // 初始化事件监听器
         function initEventListeners() {
@@ -536,13 +520,7 @@
             timeLimitSlider.addEventListener('input', updateTimeValue);
             optionButtons.forEach(button => button.addEventListener('click', checkAnswer));
             submitAnswer.addEventListener('click', checkInputAnswer);
-            highscoresBtn.addEventListener('click', openHighscores);
-            closeHighscoresBtn.addEventListener('click', closeHighscores);
-            closeHighscoresX.addEventListener('click', closeHighscores);
-            highscoresFilter.addEventListener('change', updateHighscoresList);
-            closePlayerModal.addEventListener('click', closePlayerSelection);
-            addPlayerBtn.addEventListener('click', addNewPlayer);
-            changePlayerBtn.addEventListener('click', openPlayerSelection);
+            retryLoadBtn.addEventListener('click', loadQuestions);
             
             // 允许按Enter键提交输入答案
             inputAnswer.addEventListener('keypress', function(e) {
@@ -551,7 +529,7 @@
                 }
             });
             
-            // 模态框动画
+            // 模态框点击外部关闭
             settingsModal.addEventListener('click', (e) => {
                 if (e.target === settingsModal) closeSettings();
             });
@@ -560,292 +538,77 @@
                 if (e.target === gameOverModal) closeGameOverModal();
             });
             
-            highscoresModal.addEventListener('click', (e) => {
-                if (e.target === highscoresModal) closeHighscores();
-            });
-            
-            playerModal.addEventListener('click', (e) => {
-                if (e.target === playerModal) closePlayerSelection();
-            });
+            // 初始化排行榜事件监听器
+            initLeaderboardEventListeners();
         }
 
-        // 加载玩家数据
-        function loadPlayerData() {
-            // 从本地存储加载玩家数据
-            const savedPlayers = localStorage.getItem('quizPlayers');
-            const savedHighscores = localStorage.getItem('quizHighscores');
+        // 初始化排行榜事件监听器
+        function initLeaderboardEventListeners() {
+            leaderboardBtn.addEventListener('click', openLeaderboard);
+            closeLeaderboardBtn.addEventListener('click', closeLeaderboard);
+            clearLeaderboardBtn.addEventListener('click', clearLeaderboard);
+            saveNameBtn.addEventListener('click', savePlayerName);
             
-            if (savedPlayers) {
-                gameState.players = JSON.parse(savedPlayers);
-            }
-            
-            if (savedHighscores) {
-                gameState.highscores = JSON.parse(savedHighscores);
-            }
-            
-            // 如果没有玩家，创建一个默认玩家
-            if (gameState.players.length === 0) {
-                addNewPlayer('默认玩家', true);
-            }
-            
-            // 更新玩家列表UI
-            updatePlayersList();
-        }
-
-        // 添加新玩家
-        function addNewPlayer(name = null, skipValidation = false) {
-            let playerName = name || newPlayerName.value.trim();
-            
-            if (!skipValidation) {
-                if (!playerName) {
-                    alert('请输入玩家名称');
-                    return;
-                }
-                
-                // 检查玩家是否已存在
-                const playerExists = gameState.players.some(p => p.name.toLowerCase() === playerName.toLowerCase());
-                if (playerExists) {
-                    alert('该玩家名称已存在');
-                    return;
-                }
-            }
-            
-            const newPlayer = {
-                id: Date.now().toString(),
-                name: playerName
-            };
-            
-            gameState.players.push(newPlayer);
-            
-            // 保存到本地存储
-            savePlayerData();
-            
-            // 更新UI
-            updatePlayersList();
-            
-            // 清空输入框
-            newPlayerName.value = '';
-            
-            // 自动选择新添加的玩家
-            selectPlayer(newPlayer.id);
-        }
-
-        // 更新玩家列表
-        function updatePlayersList() {
-            playersList.innerHTML = '';
-            
-            gameState.players.forEach(player => {
-                const playerElement = document.createElement('div');
-                playerElement.className = `flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer ${gameState.currentPlayer?.id === player.id ? 'bg-primary/10 border-l-4 border-primary' : ''}`;
-                playerElement.innerHTML = `
-                    <i class="fa fa-user-circle text-primary mr-2"></i>
-                    <span>${player.name}</span>
-                `;
-                playerElement.addEventListener('click', () => selectPlayer(player.id));
-                
-                playersList.appendChild(playerElement);
-            });
-            
-            // 更新选择按钮状态
-            updateSelectPlayerButton();
-        }
-
-        // 选择玩家
-        function selectPlayer(playerId) {
-            const player = gameState.players.find(p => p.id === playerId);
-            if (player) {
-                gameState.currentPlayer = player;
-                
-                // 更新UI
-                currentPlayerName.textContent = player.name;
-                currentPlayerContainer.classList.remove('hidden');
-                changePlayerBtn.classList.remove('hidden');
-                
-                // 高亮选中的玩家
-                document.querySelectorAll('#players-list > div').forEach(el => {
-                    el.classList.remove('bg-primary/10', 'border-l-4', 'border-primary');
-                });
-                
-                const selectedElement = Array.from(document.querySelectorAll('#players-list > div'))
-                    .find(el => el.textContent.includes(player.name));
-                
-                if (selectedElement) {
-                    selectedElement.classList.add('bg-primary/10', 'border-l-4', 'border-primary');
-                }
-                
-                updateSelectPlayerButton();
-            }
-        }
-
-        // 更新选择玩家按钮状态
-        function updateSelectPlayerButton() {
-            selectPlayerBtn.disabled = !gameState.currentPlayer;
-        }
-
-        // 保存玩家数据
-        function savePlayerData() {
-            localStorage.setItem('quizPlayers', JSON.stringify(gameState.players));
-            localStorage.setItem('quizHighscores', JSON.stringify(gameState.highscores));
-        }
-
-        // 打开玩家选择模态框
-        function openPlayerSelection() {
-            playerModal.classList.remove('hidden');
-            setTimeout(() => {
-                playerModalContent.classList.remove('scale-95', 'opacity-0');
-                playerModalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        // 关闭玩家选择模态框
-        function closePlayerSelection() {
-            playerModalContent.classList.remove('scale-100', 'opacity-100');
-            playerModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                playerModal.classList.add('hidden');
-            }, 300);
-        }
-
-        // 保存分数
-        function saveScore() {
-            if (!gameState.currentPlayer) return;
-            
-            const newScore = {
-                id: Date.now().toString(),
-                playerId: gameState.currentPlayer.id,
-                playerName: gameState.currentPlayer.name,
-                score: gameState.score,
-                correctAnswers: gameState.correctAnswers,
-                wrongAnswers: gameState.wrongAnswers,
-                difficulty: gameState.difficulty,
-                date: new Date().toISOString()
-            };
-            
-            gameState.highscores.push(newScore);
-            
-            // 只保留每个玩家的前10个最高分
-            const topScoresPerPlayer = {};
-            gameState.highscores.forEach(score => {
-                if (!topScoresPerPlayer[score.playerId]) {
-                    topScoresPerPlayer[score.playerId] = [];
-                }
-                topScoresPerPlayer[score.playerId].push(score);
-                
-                // 排序并保留前10名
-                topScoresPerPlayer[score.playerId].sort((a, b) => b.score - a.score);
-                if (topScoresPerPlayer[score.playerId].length > 10) {
-                    topScoresPerPlayer[score.playerId] = topScoresPerPlayer[score.playerId].slice(0, 10);
+            // 玩家名称输入框按Enter键保存
+            playerNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    savePlayerName();
                 }
             });
             
-            // 重建高分列表
-            gameState.highscores = [];
-            Object.values(topScoresPerPlayer).forEach(scores => {
-                gameState.highscores.push(...scores);
+            // 点击模态框外部关闭
+            leaderboardModal.addEventListener('click', (e) => {
+                if (e.target === leaderboardModal) closeLeaderboard();
             });
             
-            // 保存到本地存储
-            savePlayerData();
-            
-            // 检查是否是个人最佳成绩
-            return isPersonalBest(newScore);
-        }
-
-        // 检查是否是个人最佳成绩
-        function isPersonalBest(newScore) {
-            const playerScores = gameState.highscores
-                .filter(s => s.playerId === newScore.playerId)
-                .sort((a, b) => b.score - a.score);
-                
-            return playerScores.length === 0 || playerScores[0].id === newScore.id;
-        }
-
-        // 打开高分榜
-        function openHighscores() {
-            updateHighscoresList();
-            
-            highscoresModal.classList.remove('hidden');
-            setTimeout(() => {
-                highscoresModalContent.classList.remove('scale-95', 'opacity-0');
-                highscoresModalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        // 关闭高分榜
-        function closeHighscores() {
-            highscoresModalContent.classList.remove('scale-100', 'opacity-100');
-            highscoresModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                highscoresModal.classList.add('hidden');
-            }, 300);
-        }
-
-        // 更新高分榜列表
-        function updateHighscoresList() {
-            highscoresList.innerHTML = '';
-            
-            let filteredScores = [...gameState.highscores];
-            
-            // 应用过滤器
-            if (highscoresFilter.value === 'current' && gameState.currentPlayer) {
-                filteredScores = filteredScores.filter(s => s.playerId === gameState.currentPlayer.id);
-            }
-            
-            // 按分数排序
-            filteredScores.sort((a, b) => b.score - a.score);
-            
-            // 只显示前20名
-            const topScores = filteredScores.slice(0, 20);
-            
-            if (topScores.length === 0) {
-                highscoresList.innerHTML = '<div class="text-center text-gray-500 py-4">暂无分数记录</div>';
-                return;
-            }
-            
-            topScores.forEach((score, index) => {
-                const scoreElement = document.createElement('div');
-                const isCurrentPlayer = gameState.currentPlayer && score.playerId === gameState.currentPlayer.id;
-                
-                scoreElement.className = `flex justify-between items-center p-2 rounded-lg ${isCurrentPlayer ? 'bg-primary/10' : index < 3 ? 'bg-accent/5' : 'bg-gray-50'}`;
-                
-                // 格式化日期
-                const date = new Date(score.date);
-                const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-                
-                let medalIcon = '';
-                if (index === 0) medalIcon = '<i class="fa fa-trophy text-accent mr-2"></i>';
-                else if (index === 1) medalIcon = '<i class="fa fa-trophy text-gray-400 mr-2"></i>';
-                else if (index === 2) medalIcon = '<i class="fa fa-trophy text-amber-700 mr-2"></i>';
-                
-                scoreElement.innerHTML = `
-                    <div class="flex items-center">
-                        <span class="w-6 text-center font-bold ${index < 3 ? 'text-accent' : 'text-gray-500'}">${index + 1}</span>
-                        ${medalIcon}
-                        <span class="font-medium ${isCurrentPlayer ? 'text-primary font-bold' : ''}">${score.playerName}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="font-bold text-primary">${score.score}</span>
-                        <span class="text-xs text-gray-500 ml-2">${formattedDate}</span>
-                    </div>
-                `;
-                
-                highscoresList.appendChild(scoreElement);
+            playerNameModal.addEventListener('click', (e) => {
+                if (e.target === playerNameModal) closePlayerNameModal();
             });
+        }
+
+        // 显示游戏界面
+        function showGameUI() {
+            loadingIndicator.classList.add('hidden');
+            loadError.classList.add('hidden');
+            gameHeader.classList.remove('hidden');
+            gameStats.classList.remove('hidden');
+            gameControls.classList.remove('hidden');
+            gameContainer.classList.remove('hidden');
+            footer.classList.remove('hidden');
+        }
+
+        // 显示加载错误
+        function showLoadError() {
+            loadingIndicator.classList.add('hidden');
+            loadError.classList.remove('hidden');
         }
 
         // 加载题库
         async function loadQuestions() {
+            loadingIndicator.classList.remove('hidden');
+            loadError.classList.add('hidden');
+            
             try {
+                // 检查文件路径是否正确
                 const response = await fetch('questions.json');
+                
                 if (!response.ok) {
-                    throw new Error('Failed to load questions');
+                    throw new Error(`HTTP错误: ${response.status}`);
                 }
-                gameState.questions = await response.json();
+                
+                const data = await response.json();
+                
+                // 适配新的JSON结构
+                gameState.questions = {};
+                for (const [key, value] of Object.entries(data)) {
+                    gameState.questions[key] = value.questions || value;
+                }
+                
                 console.log('题库加载成功');
+                showGameUI();
             } catch (error) {
                 console.error('加载题库时出错:', error);
-                // 加载失败时使用备用题目
-                gameState.questions = getFallbackQuestions();
+                showLoadError();
             }
         }
 
@@ -856,14 +619,8 @@
 
         // 开始游戏
         function startGame() {
-            // 如果没有选择玩家，先显示玩家选择模态框
-            if (!gameState.currentPlayer) {
-                openPlayerSelection();
-                return;
-            }
-            
             if (!gameState.questions) {
-                alert('正在加载题库，请稍候重试');
+                alert('题库未加载完成，请稍候重试');
                 return;
             }
             
@@ -873,7 +630,6 @@
             gameState.score = 0;
             gameState.correctAnswers = 0;
             gameState.wrongAnswers = 0;
-            gameState.usedQuestions = {}; // 重置已使用的题目
             updateScore();
             generateQuestion();
             startTimer();
@@ -950,16 +706,15 @@
 
         // 分享结果
         function shareResult() {
-            // 模拟分享功能
             if (navigator.share) {
                 navigator.share({
                     title: '益智题挑战',
-                    text: `${gameState.currentPlayer.name}在益智题挑战中得了${gameState.score}分！你也来试试吧！`,
+                    text: `我在益智题挑战中得了${gameState.score}分！你也来试试吧！`,
                     url: window.location.href
                 })
                 .catch(error => console.log('分享失败:', error));
             } else {
-                alert(`${gameState.currentPlayer.name}的得分: ${gameState.score}\n\n复制此链接分享: ${window.location.href}`);
+                alert(`复制此链接分享: ${window.location.href}\n\n你的得分: ${gameState.score}`);
             }
         }
 
@@ -1184,6 +939,7 @@
         // 处理错误答案
         function handleWrongAnswer() {
             gameState.wrongAnswers++;
+            
             feedbackDisplay.textContent = `错误！正确答案是: ${gameState.currentQuestion.answer}`;
             feedbackDisplay.className = "text-center h-10 mb-4 text-danger font-bold fade-in";
             
@@ -1206,21 +962,13 @@
             gameState.isPlaying = false;
             clearInterval(gameState.timerInterval);
             
-            // 保存分数
-            const isPersonalBest = saveScore();
-            
             // 更新游戏结束模态框
             finalScoreDisplay.textContent = gameState.score;
             correctAnswersDisplay.textContent = gameState.correctAnswers;
             wrongAnswersDisplay.textContent = gameState.wrongAnswers;
             
-            // 显示高分提示
-            if (isPersonalBest) {
-                highscoreIndicator.classList.remove('hidden');
-                highscoreMessage.textContent = `恭喜！新的个人最佳成绩: ${gameState.score}分`;
-            } else {
-                highscoreIndicator.classList.add('hidden');
-            }
+            // 保存分数
+            saveScore();
             
             // 显示游戏结束模态框
             gameOverModal.classList.remove('hidden');
@@ -1234,98 +982,156 @@
             restartBtn.classList.add('hidden');
         }
 
-        // 备用题库（当无法加载JSON文件时使用）
-        function getFallbackQuestions() {
-            return {
-                math: [
-                    {
-                        question: "6 × 7 = ?",
-                        answer: "42",
-                        options: ["40", "42", "45"]
-                    },
-                    {
-                        question: "18 ÷ 3 + 5 = ?",
-                        answer: "11",
-                        options: ["10", "11", "12"]
-                    }
-                ],
-                logic: [
-                    {
-                        question: "一个人在漆黑的房间里能看到东西吗？",
-                        answer: "不能",
-                        options: ["能", "不能", "有时能"]
-                    },
-                    {
-                        question: "什么东西越洗越脏？",
-                        answer: "水",
-                        options: ["水", "衣服", "肥皂"]
-                    }
-                ],
-                trivia: [
-                    {
-                        question: "什么东西有五个头，但人不觉得它怪呢？",
-                        answer: "手或脚",
-                        options: ["手或脚", "怪物", "手套"]
-                    },
-                    {
-                        question: "什么东西晚上才会长出尾巴？",
-                        answer: "流星",
-                        options: ["流星", "猫", "月亮"]
-                    }
-                ],
-                word: [
-                    {
-                        question: "请找出与'巨大'意思相反的词",
-                        answer: "微小",
-                        options: ["微小", "高大", "广阔"]
-                    },
-                    {
-                        question: "下列哪个词是'快乐'的近义词？",
-                        answer: "高兴",
-                        options: ["高兴", "悲伤", "愤怒"]
-                    }
-                ],
-                life: [
-                    {
-                        question: "哪种食物富含维生素C？",
-                        answer: "橙子",
-                        options: ["橙子", "牛肉", "米饭"]
-                    },
-                    {
-                        question: "火灾时应该拨打哪个电话？",
-                        answer: "119",
-                        options: ["119", "110", "120"]
-                    }
-                ],
-                fun: [
-                    {
-                        question: "为什么自由女神像总是站在纽约港？",
-                        answer: "因为她不能坐下",
-                        options: [
-                            "因为她不能坐下",
-                            "那是她的工作岗位",
-                            "为了方便游客参观"
-                        ]
-                    },
-                    {
-                        question: "什么东西人们在不停地吃它，却永远吃不饱？",
-                        answer: "空气",
-                        options: ["空气", "水", "零食"]
-                    }
-                ],
-                number: [
-                    {
-                        question: "找出数列中的下一个数字：2, 4, 8, 16, ?",
-                        answer: "32",
-                        options: ["32", "24", "30"]
-                    },
-                    {
-                        question: "找出数列中的下一个数字：1, 3, 6, 10, ?",
-                        answer: "15",
-                        options: ["12", "14", "15"]
-                    }
-                ]
+        // 打开排行榜
+        function openLeaderboard() {
+            updateLeaderboardDisplay();
+            leaderboardModal.classList.remove('hidden');
+            setTimeout(() => {
+                leaderboardContent.classList.remove('scale-95', 'opacity-0');
+                leaderboardContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        // 关闭排行榜
+        function closeLeaderboard() {
+            leaderboardContent.classList.remove('scale-100', 'opacity-100');
+            leaderboardContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                leaderboardModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // 打开玩家名称输入框
+        function openPlayerNameModal() {
+            // 如果已有名字，填充输入框
+            if (leaderboardState.playerName) {
+                playerNameInput.value = leaderboardState.playerName;
+            } else {
+                // 生成一个默认名字
+                const defaultNames = ['智慧之星', '解题高手', '脑力达人', 'puzzle大师', '思维王者'];
+                playerNameInput.value = defaultNames[Math.floor(Math.random() * defaultNames.length)];
+            }
+            
+            playerNameModal.classList.remove('hidden');
+            setTimeout(() => {
+                nameModalContent.classList.remove('scale-95', 'opacity-0');
+                nameModalContent.classList.add('scale-100', 'opacity-100');
+                playerNameInput.focus();
+            }, 10);
+        }
+
+        // 关闭玩家名称输入框
+        function closePlayerNameModal() {
+            nameModalContent.classList.remove('scale-100', 'opacity-100');
+            nameModalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                playerNameModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // 保存玩家名称
+        function savePlayerName() {
+            const name = playerNameInput.value.trim() || '匿名玩家';
+            leaderboardState.playerName = name;
+            localStorage.setItem('puzzleGamePlayerName', name);
+            closePlayerNameModal();
+            
+            // 如果是游戏结束后保存名字，保存分数
+            if (gameState.isPlaying === false && gameState.score > 0) {
+                saveScore();
+            }
+        }
+
+        // 保存分数到排行榜
+        function saveScore() {
+            // 如果没有玩家名称，提示输入
+            if (!leaderboardState.playerName) {
+                openPlayerNameModal();
+                return;
+            }
+            
+            // 添加新分数
+            const newScore = {
+                name: leaderboardState.playerName,
+                score: gameState.score,
+                correct: gameState.correctAnswers,
+                date: new Date().toISOString()
             };
+            
+            leaderboardState.scores.push(newScore);
+            
+            // 只保留前10名高分
+            leaderboardState.scores.sort((a, b) => b.score - a.score);
+            if (leaderboardState.scores.length > 10) {
+                leaderboardState.scores = leaderboardState.scores.slice(0, 10);
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem('puzzleGameScores', JSON.stringify(leaderboardState.scores));
+            
+            // 更新排行榜显示
+            updateLeaderboardDisplay();
+        }
+
+        // 更新排行榜显示
+        function updateLeaderboardDisplay() {
+            leaderboardList.innerHTML = '';
+            
+            if (leaderboardState.scores.length === 0) {
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'text-center py-8 text-gray-500';
+                emptyItem.innerHTML = '<i class="fa fa-trophy text-3xl mb-2 text-gray-300"></i><p>暂无记录，快来挑战吧！</p>';
+                leaderboardList.appendChild(emptyItem);
+                return;
+            }
+            
+            // 显示排行榜
+            leaderboardState.scores.forEach((entry, index) => {
+                const date = new Date(entry.date);
+                const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                
+                const listItem = document.createElement('div');
+                listItem.className = `flex items-center p-3 rounded-lg ${index < 3 ? 'bg-primary/5' : 'bg-gray-50'}`;
+                
+                // 排名样式（前三名有特殊样式）
+                let rankStyle = '';
+                let medalIcon = '';
+                
+                if (index === 0) {
+                    rankStyle = 'bg-yellow-500 text-white';
+                    medalIcon = '<i class="fa fa-trophy text-yellow-500 ml-2"></i>';
+                } else if (index === 1) {
+                    rankStyle = 'bg-gray-400 text-white';
+                    medalIcon = '<i class="fa fa-trophy text-gray-400 ml-2"></i>';
+                } else if (index === 2) {
+                    rankStyle = 'bg-amber-700 text-white';
+                    medalIcon = '<i class="fa fa-trophy text-amber-700 ml-2"></i>';
+                } else {
+                    rankStyle = 'bg-gray-200 text-gray-700';
+                }
+                
+                listItem.innerHTML = `
+                    <div class="w-8 h-8 rounded-full ${rankStyle} flex items-center justify-center font-bold mr-3">
+                        ${index + 1}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="font-medium">${entry.name} ${medalIcon}</div>
+                        <div class="text-sm text-gray-500">答对 ${entry.correct} 题 · ${formattedDate}</div>
+                    </div>
+                    <div class="font-bold text-primary text-xl">${entry.score}</div>
+                `;
+                
+                leaderboardList.appendChild(listItem);
+            });
+        }
+
+        // 清空排行榜
+        function clearLeaderboard() {
+            if (confirm('确定要清空所有排行榜记录吗？此操作不可恢复。')) {
+                leaderboardState.scores = [];
+                localStorage.removeItem('puzzleGameScores');
+                updateLeaderboardDisplay();
+            }
         }
 
         // 初始化游戏
@@ -1334,15 +1140,15 @@
             difficultyDisplay.textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
             timerDisplay.textContent = gameState.timeLimit;
             
-            // 加载玩家数据
-            loadPlayerData();
-            
             // 加载题库
             await loadQuestions();
+            
+            // 初始化排行榜显示
+            updateLeaderboardDisplay();
         }
 
         // 页面加载完成后初始化游戏
         document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
-</html>
+</html>    
