@@ -1,207 +1,141 @@
 {
-    "math": {
-        "typeName": "数学运算",
-        "questions": [ 
-		{"question": "25 + 13 + 7 = ?", "answer": "45", "options": ["43", "45", "47"]},
-		{"question": "47 - 18 - 10 = ?", "answer": "19", "options": ["17", "19", "21"]},
-		{"question": "6 × 3 + 5 = ?", "answer": "23", "options": ["21", "23", "25"]},
-		{"question": "36 ÷ 6 + 8 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "18 + 27 - 15 = ?", "answer": "30", "options": ["28", "30", "32"]},
-		{"question": "56 - 29 + 13 = ?", "answer": "40", "options": ["38", "40", "42"]},
-		{"question": "7 × 4 - 6 = ?", "answer": "22", "options": ["20", "22", "24"]},
-		{"question": "42 ÷ 7 - 3 = ?", "answer": "3", "options": ["1", "3", "5"]},
-		{"question": "33 + 19 + 8 = ?", "answer": "60", "options": ["58", "60", "62"]},
-		{"question": "64 - 35 - 12 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "5 × 8 + 10 = ?", "answer": "50", "options": ["48", "50", "52"]},
-		{"question": "54 ÷ 9 + 6 = ?", "answer": "12", "options": ["10", "12", "14"]},
-		{"question": "45 + 26 - 20 = ?", "answer": "51", "options": ["49", "51", "53"]},
-		{"question": "72 - 43 + 9 = ?", "answer": "38", "options": ["36", "38", "40"]},
-		{"question": "9 × 2 + 7 = ?", "answer": "25", "options": ["23", "25", "27"]},
-		{"question": "28 ÷ 4 + 5 = ?", "answer": "12", "options": ["10", "12", "14"]},
-		{"question": "29 + 37 + 6 = ?", "answer": "72", "options": ["70", "72", "74"]},
-		{"question": "81 - 56 - 5 = ?", "answer": "20", "options": ["18", "20", "22"]},
-		{"question": "6 × 7 - 10 = ?", "answer": "32", "options": ["30", "32", "34"]},
-		{"question": "63 ÷ 7 + 4 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "53 + 28 - 11 = ?", "answer": "70", "options": ["68", "70", "72"]},
-		{"question": "90 - 67 + 8 = ?", "answer": "31", "options": ["29", "31", "33"]},
-		{"question": "8 × 5 - 9 = ?", "answer": "31", "options": ["29", "31", "33"]},
-		{"question": "32 ÷ 8 + 12 = ?", "answer": "16", "options": ["14", "16", "18"]},
-		{"question": "17 + 48 + 5 = ?", "answer": "70", "options": ["68", "70", "72"]},
-		{"question": "65 - 27 - 13 = ?", "answer": "25", "options": ["23", "25", "27"]},
-		{"question": "3 × 9 + 6 = ?", "answer": "33", "options": ["31", "33", "35"]},
-		{"question": "45 ÷ 5 - 2 = ?", "answer": "7", "options": ["5", "7", "9"]},
-		{"question": "38 + 45 - 12 = ?", "answer": "71", "options": ["69", "71", "73"]},
-		{"question": "76 - 38 + 9 = ?", "answer": "47", "options": ["45", "47", "49"]},
-		{"question": "4 × 6 + 11 = ?", "answer": "35", "options": ["33", "35", "37"]},
-		{"question": "56 ÷ 8 + 7 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "52 + 39 + 3 = ?", "answer": "94", "options": ["92", "94", "96"]},
-		{"question": "85 - 49 - 7 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "7 × 7 - 8 = ?", "answer": "41", "options": ["39", "41", "43"]},
-		{"question": "64 ÷ 8 + 5 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "26 + 57 - 15 = ?", "answer": "68", "options": ["66", "68", "70"]},
-		{"question": "93 - 68 + 6 = ?", "answer": "31", "options": ["29", "31", "33"]},
-		{"question": "2 × 8 + 15 = ?", "answer": "31", "options": ["29", "31", "33"]},
-		{"question": "36 ÷ 4 - 3 = ?", "answer": "6", "options": ["4", "6", "8"]},
-		{"question": "43 + 38 + 4 = ?", "answer": "85", "options": ["83", "85", "87"]},
-		{"question": "70 - 25 - 18 = ?", "answer": "27", "options": ["25", "27", "29"]},
-		{"question": "5 × 6 - 7 = ?", "answer": "23", "options": ["21", "23", "25"]},
-		{"question": "21 ÷ 3 + 10 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "31 + 59 - 8 = ?", "answer": "82", "options": ["80", "82", "84"]},
-		{"question": "58 - 36 + 7 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "8 × 3 + 9 = ?", "answer": "33", "options": ["31", "33", "35"]},
-		{"question": "48 ÷ 6 - 1 = ?", "answer": "7", "options": ["5", "7", "9"]},
-		{"question": "19 + 67 + 5 = ?", "answer": "91", "options": ["89", "91", "93"]},
-		{"question": "84 - 55 - 6 = ?", "answer": "23", "options": ["21", "23", "25"]},
-		{"question": "6 × 9 - 15 = ?", "answer": "39", "options": ["37", "39", "41"]},
-		{"question": "72 ÷ 8 + 8 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "55 + 25 - 9 = ?", "answer": "71", "options": ["69", "71", "73"]},
-		{"question": "63 - 37 + 10 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "4 × 9 + 7 = ?", "answer": "43", "options": ["41", "43", "45"]},
-		{"question": "35 ÷ 5 + 6 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "28 + 53 + 4 = ?", "answer": "85", "options": ["83", "85", "87"]},
-		{"question": "92 - 64 - 8 = ?", "answer": "20", "options": ["18", "20", "22"]},
-		{"question": "3 × 7 - 4 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "54 ÷ 6 + 5 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "47 + 36 - 10 = ?", "answer": "73", "options": ["71", "73", "75"]},
-		{"question": "75 - 48 + 12 = ?", "answer": "39", "options": ["37", "39", "41"]},
-		{"question": "7 × 8 + 9 = ?", "answer": "65", "options": ["63", "65", "67"]},
-		{"question": "63 ÷ 9 - 2 = ?", "answer": "5", "options": ["3", "5", "7"]},
-		{"question": "39 + 42 + 8 = ?", "answer": "89", "options": ["87", "89", "91"]},
-		{"question": "83 - 56 - 7 = ?", "answer": "20", "options": ["18", "20", "22"]},
-		{"question": "9 × 5 + 6 = ?", "answer": "51", "options": ["49", "51", "53"]},
-		{"question": "40 ÷ 8 + 11 = ?", "answer": "16", "options": ["14", "16", "18"]},
-		{"question": "23 + 68 - 15 = ?", "answer": "76", "options": ["74", "76", "78"]},
-		{"question": "59 - 23 + 5 = ?", "answer": "41", "options": ["39", "41", "43"]},
-		{"question": "2 × 6 + 13 = ?", "answer": "25", "options": ["23", "25", "27"]},
-		{"question": "18 ÷ 2 - 3 = ?", "answer": "6", "options": ["4", "6", "8"]},
-		{"question": "51 + 39 + 2 = ?", "answer": "92", "options": ["90", "92", "94"]},
-		{"question": "68 - 43 - 9 = ?", "answer": "16", "options": ["14", "16", "18"]},
-		{"question": "6 × 5 + 8 = ?", "answer": "38", "options": ["36", "38", "40"]},
-		{"question": "24 ÷ 3 + 9 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "34 + 47 - 10 = ?", "answer": "71", "options": ["69", "71", "73"]},
-		{"question": "91 - 65 + 7 = ?", "answer": "33", "options": ["31", "33", "35"]},
-		{"question": "8 × 7 - 12 = ?", "answer": "44", "options": ["42", "44", "46"]},
-		{"question": "56 ÷ 7 + 6 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "16 + 75 + 4 = ?", "answer": "95", "options": ["93", "95", "97"]},
-		{"question": "73 - 39 - 8 = ?", "answer": "26", "options": ["24", "26", "28"]},
-		{"question": "5 × 9 + 7 = ?", "answer": "52", "options": ["50", "52", "54"]},
-		{"question": "45 ÷ 9 + 10 = ?", "answer": "15", "options": ["13", "15", "17"]},
-		{"question": "42 + 49 - 15 = ?", "answer": "76", "options": ["74", "76", "78"]},
-		{"question": "86 - 58 + 9 = ?", "answer": "37", "options": ["35", "37", "39"]},
-		{"question": "9 × 7 - 11 = ?", "answer": "52", "options": ["50", "52", "54"]},
-		{"question": "64 ÷ 8 + 5 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "27 + 65 + 6 = ?", "answer": "98", "options": ["96", "98", "100"]},
-		{"question": "67 - 39 - 5 = ?", "answer": "23", "options": ["21", "23", "25"]},
-		{"question": "3 × 8 + 12 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "32 ÷ 4 - 4 = ?", "answer": "4", "options": ["2", "4", "6"]},
-		{"question": "58 + 32 - 7 = ?", "answer": "83", "options": ["81", "83", "85"]},
-		{"question": "74 - 46 + 8 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "4 × 7 + 9 = ?", "answer": "37", "options": ["35", "37", "39"]},
-		{"question": "42 ÷ 6 + 8 = ?", "answer": "15", "options": ["13", "15", "17"]},
-		{"question": "36 + 55 + 3 = ?", "answer": "94", "options": ["92", "94", "96"]},
-		{"question": "89 - 63 - 6 = ?", "answer": "20", "options": ["18", "20", "22"]},
-		{"question": "6 × 8 - 10 = ?", "answer": "38", "options": ["36", "38", "40"]},
-		{"question": "72 ÷ 9 + 6 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "25 + 65 - 9 = ?", "answer": "81", "options": ["79", "81", "83"]},
-		{"question": "62 - 28 + 11 = ?", "answer": "45", "options": ["43", "45", "47"]},
-		{"question": "8 × 9 + 5 = ?", "answer": "77", "options": ["75", "77", "79"]},
-		{"question": "36 ÷ 9 + 13 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "37 + 45 + 6 = ?", "answer": "88", "options": ["86", "88", "90"]},
-		{"question": "78 - 49 - 7 = ?", "answer": "22", "options": ["20", "22", "24"]},
-		{"question": "3 × 5 + 14 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "25 ÷ 5 - 1 = ?", "answer": "4", "options": ["2", "4", "6"]},
-		{"question": "53 + 38 - 10 = ?", "answer": "81", "options": ["79", "81", "83"]},
-		{"question": "85 - 57 + 6 = ?", "answer": "34", "options": ["32", "34", "36"]},
-		{"question": "7 × 6 + 8 = ?", "answer": "50", "options": ["48", "50", "52"]},
-		{"question": "49 ÷ 7 + 9 = ?", "answer": "16", "options": ["14", "16", "18"]},
-		{"question": "29 + 62 + 4 = ?", "answer": "95", "options": ["93", "95", "97"]},
-		{"question": "69 - 34 - 8 = ?", "answer": "27", "options": ["25", "27", "29"]},
-		{"question": "5 × 7 - 6 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "30 ÷ 6 + 7 = ?", "answer": "12", "options": ["10", "12", "14"]},
-		{"question": "44 + 47 - 12 = ?", "answer": "79", "options": ["77", "79", "81"]},
-		{"question": "93 - 66 + 9 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "9 × 3 + 10 = ?", "answer": "37", "options": ["35", "37", "39"]},
-		{"question": "27 ÷ 3 - 5 = ?", "answer": "4", "options": ["2", "4", "6"]},
-		{"question": "35 + 55 + 3 = ?", "answer": "93", "options": ["91", "93", "95"]},
-		{"question": "70 - 43 - 6 = ?", "answer": "21", "options": ["19", "21", "23"]},
-		{"question": "4 × 5 + 13 = ?", "answer": "33", "options": ["31", "33", "35"]},
-		{"question": "40 ÷ 5 + 10 = ?", "answer": "18", "options": ["16", "18", "20"]},
-		{"question": "22 + 78 - 5 = ?", "answer": "95", "options": ["93", "95", "97"]},
-		{"question": "81 - 54 + 7 = ?", "answer": "34", "options": ["32", "34", "36"]},
-		{"question": "6 × 4 - 7 = ?", "answer": "17", "options": ["15", "17", "19"]},
-		{"question": "36 ÷ 3 + 6 = ?", "answer": "18", "options": ["16", "18", "20"]},
-		{"question": "59 + 31 + 2 = ?", "answer": "92", "options": ["90", "92", "94"]},
-		{"question": "64 - 28 - 9 = ?", "answer": "27", "options": ["25", "27", "29"]},
-		{"question": "8 × 4 + 11 = ?", "answer": "43", "options": ["41", "43", "45"]},
-		{"question": "24 ÷ 6 + 7 = ?", "answer": "11", "options": ["9", "11", "13"]},
-		{"question": "38 + 53 - 10 = ?", "answer": "81", "options": ["79", "81", "83"]},
-		{"question": "77 - 49 + 8 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "3 × 6 + 9 = ?", "answer": "27", "options": ["25", "27", "29"]},
-		{"question": "18 ÷ 3 - 2 = ?", "answer": "4", "options": ["2", "4", "6"]},
-		{"question": "49 + 42 + 5 = ?", "answer": "96", "options": ["94", "96", "98"]},
-		{"question": "88 - 53 - 6 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "7 × 5 + 8 = ?", "answer": "43", "options": ["41", "43", "45"]},
-		{"question": "35 ÷ 7 + 9 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "26 + 65 - 7 = ?", "answer": "84", "options": ["82", "84", "86"]},
-		{"question": "56 - 29 + 10 = ?", "answer": "37", "options": ["35", "37", "39"]},
-		{"question": "9 × 6 - 12 = ?", "answer": "42", "options": ["40", "42", "44"]},
-		{"question": "54 ÷ 9 + 5 = ?", "answer": "11", "options": ["9", "11", "13"]},
-		{"question": "51 + 39 + 3 = ?", "answer": "93", "options": ["91", "93", "95"]},
-		{"question": "72 - 45 - 8 = ?", "answer": "19", "options": ["17", "19", "21"]},
-		{"question": "2 × 9 + 10 = ?", "answer": "28", "options": ["26", "28", "30"]},
-		{"question": "18 ÷ 9 + 6 = ?", "answer": "8", "options": ["6", "8", "10"]},
-		{"question": "33 + 58 - 11 = ?", "answer": "80", "options": ["78", "80", "82"]},
-		{"question": "86 - 59 + 7 = ?", "answer": "34", "options": ["32", "34", "36"]},
-		{"question": "6 × 6 + 9 = ?", "answer": "45", "options": ["43", "45", "47"]},
-		{"question": "36 ÷ 6 - 3 = ?", "answer": "3", "options": ["1", "3", "5"]},
-		{"question": "46 + 45 + 4 = ?", "answer": "95", "options": ["93", "95", "97"]},
-		{"question": "94 - 67 - 5 = ?", "answer": "22", "options": ["20", "22", "24"]},
-		{"question": "5 × 5 + 12 = ?", "answer": "37", "options": ["35", "37", "39"]},
-		{"question": "25 ÷ 5 + 8 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "27 + 64 - 8 = ?", "answer": "83", "options": ["81", "83", "85"]},
-		{"question": "68 - 41 + 9 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "8 × 8 - 10 = ?", "answer": "54", "options": ["52", "54", "56"]},
-		{"question": "64 ÷ 8 + 7 = ?", "answer": "15", "options": ["13", "15", "17"]},
-		{"question": "39 + 52 + 3 = ?", "answer": "94", "options": ["92", "94", "96"]},
-		{"question": "75 - 48 - 6 = ?", "answer": "21", "options": ["19", "21", "23"]},
-		{"question": "3 × 9 + 11 = ?", "answer": "38", "options": ["36", "38", "40"]},
-		{"question": "27 ÷ 9 + 8 = ?", "answer": "11", "options": ["9", "11", "13"]},
-		{"question": "54 + 37 - 12 = ?", "answer": "79", "options": ["77", "79", "81"]},
-		{"question": "83 - 56 + 9 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "7 × 9 - 15 = ?", "answer": "48", "options": ["46", "48", "50"]},
-		{"question": "72 ÷ 9 + 5 = ?", "answer": "13", "options": ["11", "13", "15"]},
-		{"question": "21 + 79 + 2 = ?", "answer": "102", "options": ["100", "102", "104"]},
-		{"question": "61 - 34 - 7 = ?", "answer": "20", "options": ["18", "20", "22"]},
-		{"question": "4 × 8 + 13 = ?", "answer": "45", "options": ["43", "45", "47"]},
-		{"question": "32 ÷ 4 + 6 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "48 + 43 - 9 = ?", "answer": "82", "options": ["80", "82", "84"]},
-		{"question": "92 - 65 + 8 = ?", "answer": "35", "options": ["33", "35", "37"]},
-		{"question": "6 × 8 + 7 = ?", "answer": "55", "options": ["53", "55", "57"]},
-		{"question": "48 ÷ 6 - 2 = ?", "answer": "6", "options": ["4", "6", "8"]},
-		{"question": "35 + 56 + 4 = ?", "answer": "95", "options": ["93", "95", "97"]},
-		{"question": "76 - 49 - 8 = ?", "answer": "19", "options": ["17", "19", "21"]},
-		{"question": "5 × 3 + 14 = ?", "answer": "29", "options": ["27", "29", "31"]},
-		{"question": "15 ÷ 3 + 9 = ?", "answer": "14", "options": ["12", "14", "16"]},
-		{"question": "29 + 62 - 10 = ?", "answer": "81", "options": ["79", "81", "83"]},
-		{"question": "87 - 59 + 6 = ?", "answer": "34", "options": ["32", "34", "36"]},
-		{"question": "8 × 6 + 9 = ?", "answer": "57", "options": ["55", "57", "59"]},
-		{"question": "48 ÷ 8 - 1 = ?", "answer": "5", "options": ["3", "5", "7"]},
-		{"question": "43 + 48 + 5 = ?", "answer": "96", "options": ["94", "96", "98"]},
-		{"question": "69 - 42 - 6 = ?", "answer": "21", "options": ["19", "21", "23"]},
-		{"question": "3 × 4 + 12 = ?", "answer": "24", "options": ["22", "24", "26"]},
-		{"question": "12 ÷ 3 + 8 = ?", "answer": "12", "options": ["10", "12", "14"]},
-		{"question": "57 + 34 - 9 = ?", "answer": "82", "options": ["80", "82", "84"]},
-		{"question": "80 - 53 + 7 = ?", "answer": "34", "options": ["32", "34", "36"]},
-		{"question": "7 × 3 + 10 = ?", "answer": "31", "options": ["29", "31", "33"]},
-		{"question": "21 ÷ 7 + 6 = ?", "answer": "9", "options": ["7", "9", "11"]},
-		{"question": "32 + 59 + 3 = ?", "answer": "94", "options": ["92", "94", "96"]},
-		{"question": "73 - 46 - 5 = ?", "answer": "22", "options": ["20", "22", "24"]},
-		{"question": "9 × 4 + 8 = ?", "answer": "44", "options": ["42", "44", "46"]},
-		{"question": "36 ÷ 4 - 3 = ?", "answer": "6", "options": ["4", "6", "8"]},
-		{"question": "47 + 44 - 10 = ?", "answer": "81", "options": ["79", "81", "83"]},
-		{"question": "95 - 68 + 9 = ?", "answer": "36", "options": ["34", "36", "38"]},
-		{"question": "2 × 7 + 11 = ?", "answer": "25", "options": ["23", "25", "27"]},
-		{"question": "14 ÷ 2 + 5 = ?", "answer": "12", "options": ["10", "12", "14"]}
+  "math": {
+    "description": "数学运算类题目，包含基础运算、代数和几何问题",
+    "questions": [
+      {
+        "question": "3 + 5 × 2 = ?",
+        "answer": "13",
+        "options": ["10", "13", "16"]
+      },
+      {
+        "question": "一个三角形的内角和是多少度？",
+        "answer": "180",
+        "options": ["90", "180", "360"]
+      },
+      {
+        "question": "如果x + 5 = 12，那么x的值是多少？",
+        "answer": "7",
+        "options": ["6", "7", "8"]
+      }
+    ]
+  },
+  "logic": {
+    "description": "逻辑思维类题目，需要通过推理得出结论",
+    "questions": [
+      {
+        "question": "所有的狗都是哺乳动物，金毛是狗，所以金毛是？",
+        "answer": "哺乳动物",
+        "options": ["猫科动物", "哺乳动物", "爬行动物"]
+      },
+      {
+        "question": "如果A比B高，B比C高，那么谁最高？",
+        "answer": "A",
+        "options": ["A", "B", "C"]
+      },
+      {
+        "question": "找出不同类的一项：苹果、香蕉、胡萝卜、橙子",
+        "answer": "胡萝卜",
+        "options": ["苹果", "香蕉", "胡萝卜"]
+      }
+    ]
+  },
+  "trivia": {
+    "description": "脑筋急转弯，需要打破常规思维",
+    "questions": [
+      {
+        "question": "什么东西越洗越脏？",
+        "answer": "水",
+        "options": ["肥皂", "水", "衣服"]
+      },
+      {
+        "question": "什么东西有五个头，但人不觉得它怪呢？",
+        "answer": "手或脚",
+        "options": ["手或脚", "怪物", "手套"]
+      },
+      {
+        "question": "什么东西晚上才会长出尾巴？",
+        "answer": "流星",
+        "options": ["流星", "猫", "月亮"]
+      }
+    ]
+  },
+  "word": {
+    "description": "文字理解题，包括字谜、成语和语义理解",
+    "questions": [
+      {
+        "question": "\"画蛇添足\"的意思是？",
+        "answer": "做了多余的事",
+        "options": ["做事认真", "做了多余的事", "画画技巧好"]
+      },
+      {
+        "question": "一口咬掉牛尾巴（打一字）",
+        "answer": "告",
+        "options": ["告", "午", "牛"]
+      },
+      {
+        "question": "找出与\"寒冷\"意思相反的词",
+        "answer": "炎热",
+        "options": ["温暖", "炎热", "凉爽"]
+      }
+    ]
+  },
+  "life": {
+    "description": "生活常识题，关于日常知识和生活技能",
+    "questions": [
+      {
+        "question": "炒菜时油着火了应该怎么办？",
+        "answer": "用锅盖盖住",
+        "options": ["用水浇", "用锅盖盖住", "撒盐"]
+      },
+      {
+        "question": "哪种食物富含维生素C？",
+        "answer": "橙子",
+        "options": ["牛肉", "橙子", "米饭"]
+      },
+      {
+        "question": "正常成年人的体温大约是多少摄氏度？",
+        "answer": "37",
+        "options": ["35", "37", "39"]
+      }
+    ]
+  },
+  "fun": {
+    "description": "趣味推理题，需要观察力和联想能力",
+    "questions": [
+      {
+        "question": "什么东西人们在不停地吃它，却永远吃不饱？",
+        "answer": "空气",
+        "options": ["空气", "水", "零食"]
+      },
+      {
+        "question": "为什么自由女神像站在纽约港？",
+        "answer": "因为她不能坐",
+        "options": ["历史原因", "因为她不能坐", "地理位置好"]
+      },
+      {
+        "question": "什么东西越用越有钱？",
+        "answer": "存钱罐",
+        "options": ["银行", "存钱罐", "工作"]
+      }
+    ]
+  },
+  "number": {
+    "description": "数字推理题，寻找数列规律",
+    "questions": [
+      {
+        "question": "找出数列规律：2, 4, 6, 8, ?",
+        "answer": "10",
+        "options": ["9", "10", "12"]
+      },
+      {
+        "question": "找出数列规律：1, 4, 9, 16, ?",
+        "answer": "25",
+        "options": ["20", "25", "30"]
+      },
+      {
+        "question": "找出数列规律：1, 1, 2, 3, 5, 8, ?",
+        "answer": "13",
+        "options": ["11", "12", "13"]
       }
     ]
   }
