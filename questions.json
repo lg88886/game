@@ -1,7 +1,7 @@
 {
     "math": {
         "typeName": "数学运算",
-		[
+        "questions": [  // 补充键名"questions"
 		{"question": "25 + 13 + 7 = ?", "answer": "45", "options": ["43", "45", "47"]},
 		{"question": "47 - 18 - 10 = ?", "answer": "19", "options": ["17", "19", "21"]},
 		{"question": "6 × 3 + 5 = ?", "answer": "23", "options": ["21", "23", "25"]},
